@@ -19,7 +19,22 @@
 #' to query recent citings. Queries to the eBird API require a user key; more
 #' information on obtaining a key can be found at the eBird API documentation.
 #'
-#' @return a data frame of recent observations
+#'
+#' @return An object of class "recent_obs" with the following elements:
+#' \describe{
+#'   \item{query_type}{the type of query performed}
+#'   \item{query_parameters}{list of query parameters passed in request}
+#'   \item{obs}{data frame of observations returned from query; if no
+#'   observations are returned, \code{obs} is NULL}
+#' }
+#'
+#' @examples
+#' \dontrun{
+#'   # Read eBird key in from file
+#'   key <- scan(file = "ebird-key.txt", what = "character")
+#'   # Search for observations 5 km from lat/lng coordinates
+#'   recent <- RecentNearby(key = key, lat = 32.28, lng = -111.02, dist = 5)
+#' }
 #'
 #' @importFrom curl curl new_handle
 #' @importFrom jsonlite fromJSON
@@ -35,17 +50,17 @@ RecentNearby <- function(key,
                          timeout_sec = 30) {
 
   # need to coerce logicals to character
-  request <- paste0("https://ebird.org/ws2.0/data/obs/geo/recent?",
+  request <- paste0("https://api.ebird.org/v2/data/obs/geo/recent?",
                     "&lat=", lat,
                     "&lng=", lng,
-                    "&dist=", distance,
-                    "&back=", days.back,
+                    "&dist=", dist,
+                    "&back=", back,
                     "&hotspot=", tolower(as.character(hotspot)),
                     "&includeProvisional=", tolower(as.character(include_provisional)),
                     "&key=", key)
   obs_request <- character(0)
   tries <- 0
-  message(paste0("Requesting ", request, "..."))
+  # message(paste0("Requesting ", request, "..."))
   while(class(obs_request) != "data.frame" && tries < max_tries) {
     if (tries > 0) {
       message(paste0("...attempt ", tries, " failed; requesting again"))
@@ -64,7 +79,24 @@ RecentNearby <- function(key,
     tries <- tries + 1
   }
   if (class(obs_request) != "data.frame"){
-    message(paste0("Failed request for ", request, " after ", tries, " tries."))
+    message(paste0("Failed request after ", tries, " tries."))
+    obs_request <- NULL
   }
-  return(obs_request)
+
+  # Want to return the query parameters along with any results
+  query_params = list(lat = lat,
+                      lng = lng,
+                      dist = dist,
+                      back = back,
+                      hotspot = hotspot,
+                      include_provisional = include_provisional)
+
+  # Create the object and class it appropriately
+  query_result <- list(query_type = "nearby observations",
+                       query_params = query_params,
+                       obs = obs_request)
+
+  class(query_result) <- "recent_obs"
+  # return(obs_request)
+  return(query_result)
 }

@@ -18,20 +18,37 @@
 #' @param max_tries integer maximum number of query attempts to try
 #' @param timeout_sec integer time to allow before query is aborted
 #'
+#' @return An object of class "recent_obs" with the following elements:
+#' \describe{
+#'   \item{query_type}{the type of query performed}
+#'   \item{query_parameters}{list of query parameters passed in request,
+#'   including the species code}
+#'   \item{obs}{data frame of observations returned from query; if no
+#'   observations are returned, \code{obs} is NULL}
+#' }
+#'
 #' @importFrom curl curl new_handle
 #' @importFrom jsonlite fromJSON
 #' @export
-RecentNearbySpecies <- function(key, species_code, lat = 32.241, lng = -110.938,
-                                dist = 80, back = 4, hotspot = "true",
-                                max_tries = 5, timeout_sec = 30) {
+RecentNearbySpecies <- function(key,
+                                species_code,
+                                lat = 32.241,
+                                lng = -110.938,
+                                dist = 80,
+                                back = 4,
+                                hotspot = TRUE,
+                                include_provisional = FALSE,
+                                max_tries = 5,
+                                timeout_sec = 30) {
 
   request <- paste0("https://api.ebird.org/v2/data/obs/geo/recent/",
                     species_code, "?",
                     "&lat=", lat,
                     "&lng=", lng,
-                    "&dist=", distance,
+                    "&dist=", dist,
                     "&back=", back,
                     "&hotspot=", tolower(as.character(hotspot)),
+                    "&includeProvisional=", tolower(as.character(include_provisional)),
                     "&key=", key)
 
   obs_request <- character(0)
@@ -55,6 +72,23 @@ RecentNearbySpecies <- function(key, species_code, lat = 32.241, lng = -110.938,
   }
   if (class(obs_request) != "data.frame"){
     message(paste0("Failed request for ", species_code, " after ", tries, " tries."))
+    obs_request <- NULL
   }
-  return(obs_request)
+
+  # Want to return the query parameters along with any results
+  query_params = list(species_code = species_code,
+                      lat = lat,
+                      lng = lng,
+                      dist = dist,
+                      back = back,
+                      hotspot = hotspot,
+                      include_provisional = include_provisional)
+
+  # Create the object and class it appropriately
+  query_result <- list(query_type = "nearby species",
+                       query_params = query_params,
+                       obs = obs_request)
+  class(query_result) <- "recent_obs"
+  # return(obs_request)
+  return(query_result)
 }
