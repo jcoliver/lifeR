@@ -1,4 +1,4 @@
-#' Split vector of names column into scientific and common
+#' Split vector of names into two column data frame
 #'
 #' @param x vector of species names, in the format "Common Name - Scientific
 #' name"
@@ -10,12 +10,13 @@
 #'
 #' @return data.frame of two columns, \code{Common} and \code{Scientific}
 #'
+#' @importFrom stringr str_split_fixed
 #' @export
 SplitNames <- function(x, delim = " - ") {
-  name.pairs <- strsplit(x = as.character(x), split = delim)
-  common <- sapply(name.pairs, "[[", 1)
-  scientific <- sapply(name.pairs, "[[", 2)
-  data <- data.frame(Common = common,
-                     Scientific = scientific)
+  name_pairs <- stringr::str_split_fixed(string = as.character(x),
+                                         pattern = delim,
+                                         n = 2)
+  data <- data.frame(Common = name_pairs[, 1],
+                     Scientific = name_pairs[, 2])
   return(data)
 }

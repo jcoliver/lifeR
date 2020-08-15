@@ -17,6 +17,8 @@
 #' observations which have not yet been reviewed
 #' @param max_tries integer maximum number of query attempts to try
 #' @param timeout_sec integer time to allow before query is aborted
+#' @param verbose logical determining whether or not to print messages during
+#' queries
 #'
 #' @return An object of class "recent_obs" with the following elements:
 #' \describe{
@@ -39,7 +41,8 @@ RecentNearbySpecies <- function(key,
                                 hotspot = TRUE,
                                 include_provisional = FALSE,
                                 max_tries = 5,
-                                timeout_sec = 30) {
+                                timeout_sec = 30,
+                                verbose = TRUE) {
 
   request <- paste0("https://api.ebird.org/v2/data/obs/geo/recent/",
                     species_code, "?",
@@ -51,18 +54,22 @@ RecentNearbySpecies <- function(key,
                     "&includeProvisional=", tolower(as.character(include_provisional)),
                     "&key=", key)
 
-  obs_request <- character(0)
+  observations <- character(0)
   tries <- 0
-  message(paste0("Requesting ", species_code, "..."))
-  while(class(obs_request) != "data.frame" && tries < max_tries) {
+
+  if (verbose) {
+    message(paste0("Requesting ", species_code, "..."))
+  }
+
+  while(class(observations) != "data.frame" && tries < max_tries) {
     if (tries > 0) {
-      message(paste0("...attempt ", tries, " failed for ", species_code, ". Requesting again"))
+      if (vervose) {
+        message(paste0("...attempt ", tries, " failed for ", species_code, ". Requesting again"))
+      }
     }
-    # Allow for longer host resolution times via the handle/CONNECTTIMEOUT
-    # options of curl::curl
     ebird_connection <- curl::curl(request,
                                    handle = curl::new_handle(CONNECTTIMEOUT = timeout_sec))
-    obs_request <- try(expr = {
+    observations <- try(expr = {
       ebirdJSON <- readLines(ebird_connection, warn = FALSE)
       jsonlite::fromJSON(txt = ebirdJSON)
     }, silent = TRUE)
@@ -70,9 +77,9 @@ RecentNearbySpecies <- function(key,
 
     tries <- tries + 1
   }
-  if (class(obs_request) != "data.frame"){
+  if (class(observations) != "data.frame"){
     message(paste0("Failed request for ", species_code, " after ", tries, " tries."))
-    obs_request <- NULL
+    observations <- NULL
   }
 
   # Want to return the query parameters along with any results
@@ -87,8 +94,7 @@ RecentNearbySpecies <- function(key,
   # Create the object and class it appropriately
   query_result <- list(query_type = "nearby species",
                        query_params = query_params,
-                       obs = obs_request)
+                       obs = observations)
   class(query_result) <- "recent_obs"
-  # return(obs_request)
   return(query_result)
 }
