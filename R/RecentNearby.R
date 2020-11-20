@@ -62,7 +62,8 @@ RecentNearby <- function(key,
                     "&key=", key)
   observations <- character(0)
   tries <- 0
-  while(class(observations) != "data.frame" && tries < max_tries) {
+  success <- FALSE
+  while(!success && tries < max_tries) {
     if (tries > 0) {
       if (verbose) {
         message(paste0("...attempt ", tries, " failed; requesting again"))
@@ -71,15 +72,31 @@ RecentNearby <- function(key,
 
     ebird_connection <- curl::curl(request,
                                    handle = curl::new_handle(CONNECTTIMEOUT = timeout_sec))
-    observations <- try(expr = {
-      ebirdJSON <- readLines(ebird_connection, warn = FALSE)
-      jsonlite::fromJSON(txt = ebirdJSON)
-    }, silent = TRUE)
 
+    # Make sure that request is OK
+    test_connection <- curl::curl_fetch_memory(request)
+
+    # Status 200, OK to proceed
+    if (test_connection$status_code == 200) {
+      observations <- try(expr = {
+        ebirdJSON <- readLines(ebird_connection, warn = FALSE)
+        success <- TRUE
+        # If query returns zero observations, it returns an empty JSON object
+        # "[]"
+        if (nchar(ebirdJSON) == 2) {
+          # This looks odd, but it is how we assign value is assigned to
+          # observations TODO: this block should be an internalized function?
+          NULL
+        } else {
+          jsonlite::fromJSON(txt = ebirdJSON)
+        }
+      }, silent = TRUE)
+    }
     close(ebird_connection)
     tries <- tries + 1
   }
-  if (class(observations) != "data.frame"){
+
+  if (!success & max_tries <= tries){
     message(paste0("Failed request after ", tries, " tries."))
     observations <- NULL
   }
