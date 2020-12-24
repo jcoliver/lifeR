@@ -17,7 +17,7 @@
 #' @param verbose logical determining whether or not to print messages during
 #' queries
 #'
-#' @details The function uses the eBird API (see \link{https://documenter.getpostman.com/view/664302/S1ENwy59})
+#' @details The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59})
 #' to query recent citings. Queries to the eBird API require a user key; more
 #' information on obtaining a key can be found at the eBird API documentation.
 #'

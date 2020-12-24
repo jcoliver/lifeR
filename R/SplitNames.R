@@ -5,8 +5,9 @@
 #' @param delim character separator
 #'
 #' @details Names from eBird come in a single column as: "Snow Goose - Anser
-#' caerulescens". This function provides a means of separating the common (Snow
-#' Goose) from scientific (Anser caerulescens) into two separate columns.
+#' caerulescens". This function provides a means of separating the common name
+#' (Snow Goose) from the scientific name (Anser caerulescens) into two separate
+#' columns.
 #'
 #' @return data.frame of two columns, \code{Common} and \code{Scientific}
 #'

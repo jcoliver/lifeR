@@ -3,7 +3,8 @@
 #' @param key character eBird API key
 #' @param species_code character code for species of interest; usually a
 #' six-character string such as "purmar" or "batpig". See
-#' \link{https://ebird.org/science/the-ebird-taxonomy} for more information.
+#' \url{https://ebird.org/science/the-ebird-taxonomy}
+#' for more information.
 #' @param lat numeric latitude; use negative values for southern latitudes
 #' (i.e. -46.86, \emph{not} "46.86 S)
 #' @param lng numeric longitude; use negative values for western
@@ -32,6 +33,15 @@
 #' @importFrom curl curl new_handle
 #' @importFrom jsonlite fromJSON
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#'   # Read eBird key in from file
+#'   key <- scan(file = "ebird-key.txt", what = "character")
+#'   # Search for observations of Verdin within 5 km from lat/lng coordinates
+#'   recent <- RecentNearbySpecies(key = key, species_code = "verdin",
+#'                                 lat = 32.28, lng = -111.02, dist = 5)
+#' }
 RecentNearbySpecies <- function(key,
                                 species_code,
                                 lat = 32.241,
@@ -63,7 +73,7 @@ RecentNearbySpecies <- function(key,
 
   while(class(observations) != "data.frame" && tries < max_tries) {
     if (tries > 0) {
-      if (vervose) {
+      if (verbose) {
         message(paste0("...attempt ", tries, " failed for ", species_code, ". Requesting again"))
       }
     }

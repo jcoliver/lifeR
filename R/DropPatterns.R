@@ -1,6 +1,6 @@
 #' Drops any species with given patterns in name
 #'
-#' @param data a data.frame with observations, likely the value from a call to
+#' @param data a data.frame with observations, likely the object from a call to
 #' \code{RecentNearby}.
 #' @param patterns character vector of patterns in \code{colname} column to
 #' omit
