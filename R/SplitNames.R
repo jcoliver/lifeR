@@ -11,13 +11,16 @@
 #'
 #' @return data.frame of two columns, \code{Common} and \code{Scientific}
 #'
-#' @importFrom stringr str_split_fixed
+#' @importFrom stringr str_split_fixed str_trim
 #' @export
 SplitNames <- function(x, delim = " - ") {
+  # The default of delimiter of a hyphen enclosed by a pair of whitespaces is
+  # required given eBird's returned format AND the fact that we do not want to
+  # split hyphenated names, e.g. Blue-gray Gnatcatcher
   name_pairs <- stringr::str_split_fixed(string = as.character(x),
                                          pattern = delim,
                                          n = 2)
-  data <- data.frame(Common = name_pairs[, 1],
-                     Scientific = name_pairs[, 2])
+  data <- data.frame(Common = stringr::str_trim(name_pairs[, 1]),
+                     Scientific = stringr::str_trim(name_pairs[, 2]))
   return(data)
 }

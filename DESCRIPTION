@@ -14,3 +14,5 @@ Imports:
     jsonlite (>= 1.7.0),
     stringr (>= 1.4.0)
 RoxygenNote: 7.1.1
+Suggests: 
+    testthat

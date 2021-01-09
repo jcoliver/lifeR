@@ -43,7 +43,7 @@
 RecentNearby <- function(key,
                          lat = 32.241,
                          lng = -110.938,
-                         dist = 80,
+                         dist = 50,
                          back = 4,
                          hotspot = TRUE,
                          include_provisional = FALSE,
@@ -97,7 +97,7 @@ RecentNearby <- function(key,
   }
 
   if (!success & max_tries <= tries){
-    message(paste0("Failed request after ", tries, " tries."))
+    message(paste0("Failed request for ", lat, ", ", lng, " after ", tries, " tries."))
     observations <- NULL
   }
 
