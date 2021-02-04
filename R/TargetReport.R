@@ -1,8 +1,12 @@
 #' Create report for sites to target
 #'
-#' @param centers numeric vector or matrix of latitude and longitude coordinates
+#' @param centers numeric vector or matrix of latitude and longitude
+#' coordinates; vector should be of length 2, while matrix should have two
+#' columns
 #' @param key_file path to file with eBird API key
-#' @param list_file path to file of user's observations
+#' @param list_file path to file of user's observations; this should be a csv
+#' file of observations downloaded from your My eBird page at
+#' \url{https://ebird.org/myebird}
 #' @param center_names optional character vector of names to use for each pair
 #' of latitude and longitude coordinates in \code{centers}
 #' @param max_sites integer maximum number of sites to return for each pair of
@@ -28,6 +32,10 @@
 #' @details The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59})
 #' to build the target report. Queries to the eBird API require a user key; more
 #' information on obtaining a key can be found at the eBird API documentation.
+#'
+#' @importFrom readr read_csv
+#' @importFrom dplyr bind_cols
+#' @export
 TargetReport <- function(centers,
                          key_file,
                          list_file, # TODO: Maybe make this null and add functionality
@@ -39,29 +47,99 @@ TargetReport <- function(centers,
                          include_provisional = FALSE,
                          max_tries = 5,
                          timeout_sec = 30,
-                         verbose = TRUE,
+                         verbose = TRUE, # TODO: default TRUE?
                          drop_patterns = c("sp.", "/", "Domestic type", "hybrid")) {
 
-  # Grab things we need (or stop) and qa/qc
-  # Centers vector or matrix make sure they're realistic
+  # TODO: consider how we will iterate. Will need to create a list (or data
+  # frame) that has coordinate pairs AND center names (if they exist).
+
+  # TODO: Need to be explicit in documentation about what order latitude and
+  # longitude appear and if named elements or column names is supported.
+  # Currently assume first element/column is latitude and second element is
+  # longitude
+
+  # centers will need to ultimately be a list, but start by making sure it is
+  # a matrix, doing transformation of data frame or vector as appropriate
   if (is.data.frame(centers)) {
     centers <- as.matrix(centers)
+  } else if (is.vector(centers)) {
+    if (length(centers) %% 2 == 0) {
+      centers <- matrix(data = centers, ncol = 2)
+    } else {
+      stop("TargetReport passed odd-length centers vector")
+    }
+  }
+  if (ncol(centers) != 2) {
+    stop("TargetReport requires centers matrix with two columns")
   }
 
+  # Make sure these are numbers
+  if (typeof(centers) != "double") {
+    stop("TargetReport requires centers data that are type double")
+  }
+
+  # Add in names if user passed those along; need to make sure they are the
+  # right length. If not, message user and proceed as if user had not provided
+  # names
+  user_supplied_names <- FALSE
+  if (!is.null(center_names)) {
+    if (length(center_names) == nrow(centers)) {
+      user_supplied_names <- TRUE
+    } else {
+      message("Number of center names does not match number of centers passed to TargetReport; names will be auto-generated")
+    }
+  }
+  if (!user_supplied_names) {
+    center_names <- paste("Center", 1:nrow(centers))
+  }
+  centers_df <- data.frame(centers, center_names)
+  colnames(centers_df) <- c("lat", "lng", "name")
+
+  # Convert centers to a list for ease of iteration. Each element is a one-row
+  # data frame
+  centers_list <- split(x = centers_df,
+                        f = seq(nrow(centers_df)))
 
   # key_file
+  if (!file.exists(key_file)) {
+    stop(paste0("Could not find key_file ", key_file, " for TargetReport"))
+  }
+
+  key <- scan(file = key_file)
 
   # list_file (may be optional later on)
-
+  if (!file.exists(list_file)) {
+    stop(paste0("Could not find list_file ", list_file, " for TargetReport"))
+  }
   # Read in user's list.
+  list_user <- readr::read_csv(file = list_file)
+
+  # TODO: Could be defensive here and check for Species column
 
   # SplitNames
+  list_user <- dplyr::bind_cols(list_user,
+                                SplitNames(list_user$Species))
 
-  # RecentNearby
-
-  # DropPatterns
+  # Something to hold data for each center...could just append to centers_list?
 
   # The below needs to run for EACH center
+  # Since we are updating the centers_list object, we need the indexes
+  for (i in 1:length(centers_list)) {
+    center <- centers_list[[i]]
+
+    # RecentNearby
+    recent_obs <- RecentNearby(key = key,
+                               lat = center$lat,
+                               lng = center$lng,
+                               dist = dist,
+                               back = back,
+                               hotspot = hotspot,
+                               include_provisional = include_provisional,
+                               max_tries = max_tries,
+                               timeout_sec = timeout_sec,
+                               verbose = verbose)
+
+    # DropPatterns
 
     # do set difference between user's list and result of RecentNearby post-drop
 
@@ -71,6 +149,7 @@ TargetReport <- function(centers,
     # sending to Target report; will probably need to just create a list (or
     # fancier object) with name, lat/long, results of set diff
 
+  }
   # end iteration over each center
 
   # Using template, pass info to an RMarkdown template file
