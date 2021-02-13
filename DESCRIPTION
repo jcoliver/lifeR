@@ -12,7 +12,9 @@ LazyData: true
 Imports:
     curl (>= 4.3),
     jsonlite (>= 1.7.0),
-    stringr (>= 1.4.0)
+    stringr (>= 1.4.0),
+    dplyr (>= 1.0.2),
+    readr (>= 1.4.0)
 RoxygenNote: 7.1.1
 Suggests: 
     testthat

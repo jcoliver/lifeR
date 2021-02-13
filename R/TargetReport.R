@@ -33,13 +33,14 @@
 #' to build the target report. Queries to the eBird API require a user key; more
 #' information on obtaining a key can be found at the eBird API documentation.
 #'
-#' @importFrom readr read_csv
+#' @importFrom readr read_csv cols
 #' @importFrom dplyr bind_cols
 #' @export
 TargetReport <- function(centers,
-                         key_file,
+                         key_file, # TODO: Make flexible so user could pass key string instead?
                          list_file, # TODO: Maybe make this null and add functionality
                          center_names = NULL,
+                         report_filename = "Target-Report",
                          max_sites = 5,
                          dist = 50,
                          back = 4,
@@ -47,7 +48,7 @@ TargetReport <- function(centers,
                          include_provisional = FALSE,
                          max_tries = 5,
                          timeout_sec = 30,
-                         verbose = TRUE, # TODO: default TRUE?
+                         verbose = TRUE, # TODO: default should be FALSE?
                          drop_patterns = c("sp.", "/", "Domestic type", "hybrid")) {
 
   # TODO: consider how we will iterate. Will need to create a list (or data
@@ -105,49 +106,97 @@ TargetReport <- function(centers,
     stop(paste0("Could not find key_file ", key_file, " for TargetReport"))
   }
 
-  key <- scan(file = key_file)
+  key <- scan(file = key_file, what = "character")
 
   # list_file (may be optional later on)
   if (!file.exists(list_file)) {
     stop(paste0("Could not find list_file ", list_file, " for TargetReport"))
   }
   # Read in user's list.
-  list_user <- readr::read_csv(file = list_file)
+  species_user <- readr::read_csv(file = list_file, col_types = readr::cols())
 
   # TODO: Could be defensive here and check for Species column
 
   # SplitNames
-  list_user <- dplyr::bind_cols(list_user,
-                                SplitNames(list_user$Species))
+  species_user <- dplyr::bind_cols(species_user,
+                                SplitNames(species_user$Species))
 
-  # Something to hold data for each center...could just append to centers_list?
+  message(paste("User's species count", nrow(species_user)))
+
+  # Use purrr::map to iterate over each coordinate pair?
+  # center_results <- purrr::map(centers_list,
+  #                              CenterQuery, # pass parameters to CenterQuery
+  #                              key = key,
+  #                              species_user = species_user,
+  #                              dist = dist,
+  #                              back = back,
+  #                              hotspot = hotspot,
+  #                              include_provisional = include_provisional,
+  #                              max_tries = max_tries,
+  #                              timeout_sec = timeout_sec,
+  #                              verbose = verbose)
 
   # The below needs to run for EACH center
   # Since we are updating the centers_list object, we need the indexes
+
+  save_queries <- TRUE
+
   for (i in 1:length(centers_list)) {
     center <- centers_list[[i]]
 
-    # RecentNearby
-    recent_obs <- RecentNearby(key = key,
-                               lat = center$lat,
-                               lng = center$lng,
-                               dist = dist,
-                               back = back,
-                               hotspot = hotspot,
-                               include_provisional = include_provisional,
-                               max_tries = max_tries,
-                               timeout_sec = timeout_sec,
-                               verbose = verbose)
+    # print(center)
+
+    # TODO: skip all this saving junk once it works
+    query_save <- paste0(center$name, ".Rds")
+    if (file.exists(query_save)) {
+      message(paste("Loading in from ", query_save))
+      recent_obs <- readRDS(file = query_save)
+    } else {
+      # RecentNearby
+      # recent_obs <- ""
+      recent_obs <- RecentNearby(key = key,
+                                 lat = center$lat,
+                                 lng = center$lng,
+                                 dist = dist,
+                                 back = back,
+                                 hotspot = hotspot,
+                                 include_provisional = include_provisional,
+                                 max_tries = max_tries,
+                                 timeout_sec = timeout_sec,
+                                 verbose = verbose)
+      if (save_queries) {
+        message(paste("Saving to ", query_save))
+        saveRDS(recent_obs, file = query_save)
+      }
+    }
+
+    # Pull out the species list from the RecentNearby object
+    species_all <- recent_obs$obs
 
     # DropPatterns
+    species_all <- DropPatterns(data = species_all)
 
-    # do set difference between user's list and result of RecentNearby post-drop
+    message(paste("All species count", nrow(species_all)))
 
+    # Perform set difference, getting list of all nearby species that are *NOT*
+    # on user's list: species_targets = species_all \ species_user
+    species_targets <- species_all[!(species_all$comName %in% species_user$Common), ]
+
+    message(paste("Missing species count", nrow(species_targets)))
+    # nearby.missing <- nearby.obs[!(nearby.obs$comName %in% current.list$Common), ]
+
+    print(head(species_targets))
+
+    # Iterate over every value in species_targets$speciesCode
     # For each species remaining, run
     # RecentNearbySpecies
-    # combine all this stuff, identify the targets, do some tidyverse here before
-    # sending to Target report; will probably need to just create a list (or
-    # fancier object) with name, lat/long, results of set diff
+    for (speciesCode in species_targets$speciesCode) {
+      message(paste("Querying", speciesCode))
+
+      # combine all this stuff, identify the targets, do some tidyverse here before
+      # sending to Target report; will probably need to just create a list (or
+      # fancier object) with name, lat/long, results of set diff
+    }
 
   }
   # end iteration over each center
@@ -167,7 +216,82 @@ TargetReport <- function(centers,
   # Remember to refer to parameters as part of the params list object, e.g.
   # params$param_one, params$param_two
 
-
-
-
 }
+
+#' Perform search and site selection for a single coordinate pair
+#'
+#' @param x list with center coordinate information (see Details)
+#' @param key character vector of user's eBird API key
+#' @param species_user data frame of species that user has observed
+#' @param max_sites integer maximum number of sites to return for each pair of
+#' coordinates defined in \code{centers}
+#' @param dist numeric radius (in kilometers) of area from each point defined
+#' by coordinates in \code{centers} from which to return recent observations
+#' @param back integer number of days back to search for observations
+#' @param hotspot logical indicating whether or not to restrict results to
+#' hotspot locations
+#' @param include_provisional logical indicating whether not to include
+#' observations which have not yet been reviewed
+#' @param max_tries integer maximum number of query attempts to try (only for
+#' expert use)
+#' @param timeout_sec integer time to allow before query is aborted (only for
+#' expert use)
+#' @param verbose logical determining whether or not to print messages during
+#' queries
+#' @param drop_patterns character vector of patterns in species' names to
+#' exclude certain species from consideration, such as domesticated species,
+#' hybrids, and observations not identified to species level (e.g.
+#' "Toxostoma sp.")
+#'
+#' @details The first argument of this function must be a list of data frames,
+#' each with a single row of data and at least three columns:
+#' \itemize{
+#'  \item{"lat"}{Latitude in decimal degrees}
+#'  \item{"lng"}{Longitude in decimal degrees}
+#'  \item{"name"}{Name of center to use in output report}
+#' }
+#'
+#' @return list of query results.
+#' #' \itemize{
+#'  \item{"center_info"}{List including latitude, longitude, and center name}
+#'  \item{"target_sites"}{List of target sites and potential species}
+#' }
+CenterQuery <- function(x, key,
+                        species_user,
+                        max_sites,
+                        dist,
+                        back,
+                        hotspot,
+                        include_provisional,
+                        max_tries,
+                        timeout_sec,
+                        verbose,
+                        drop_patterns) {
+
+
+  # Query eBird for recent observations near the center
+  recent_obs <- RecentNearby(key = key,
+                             lat = x$lat,
+                             lng = x$lng,
+                             dist = dist,
+                             back = back,
+                             hotspot = hotspot,
+                             include_provisional = include_provisional,
+                             max_tries = max_tries,
+                             timeout_sec = timeout_sec,
+                             verbose = verbose)
+
+
+  # DropPatterns
+
+
+
+  # do set difference between user's list and result of RecentNearby post-drop
+
+  # For each species remaining, run
+  # RecentNearbySpecies
+  # combine all this stuff, identify the targets, do some tidyverse here before
+  # sending to Target report; will probably need to just create a list (or
+  # fancier object) with name, lat/long, results of set diff
+
+  }
