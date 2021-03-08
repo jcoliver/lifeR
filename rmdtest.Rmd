@@ -1,0 +1,28 @@
+---
+title: "Paramtest"
+author: "Jeff Oliver"
+date: "1/28/2021"
+output: html_document
+params:
+  param_one: 55
+  param_list: NULL
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Param test
+
+`param_one`: 
+
+```{r param-one}
+params$param_one
+```
+
+`param_list`: 
+
+```{r param-list}
+params$param_list
+```
+
