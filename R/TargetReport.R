@@ -1,14 +1,16 @@
 #' Create report for sites to target
 #'
 #' @param centers numeric vector or matrix of latitude and longitude
-#' coordinates; vector should be of length 2, while matrix should have two
-#' columns
+#' coordinates; vector should be of length 2, e.g. 
+#' \code{c(latitude, longitude)}, while matrix should have two columns (first 
+#' column is latitude, second column is longitude)
 #' @param key_file path to file with eBird API key
 #' @param list_file path to file of user's observations; this should be a csv
 #' file of observations downloaded from your My eBird page at
 #' \url{https://ebird.org/myebird}
 #' @param center_names optional character vector of names to use for each pair
 #' of latitude and longitude coordinates in \code{centers}
+#' @param report_filename name of output file
 #' @param max_sites integer maximum number of sites to return for each pair of
 #' coordinates defined in \code{centers}
 #' @param dist numeric radius (in kilometers) of area from each point defined
@@ -40,7 +42,7 @@ TargetReport <- function(centers,
                          key_file, # TODO: Make flexible so user could pass key string instead?
                          list_file, # TODO: Maybe make this null and add functionality
                          center_names = NULL,
-                         report_filename = "Target-Report",
+                         report_filename = "Target-Report", #TODO: suffix?
                          max_sites = 5,
                          dist = 50,
                          back = 4,
@@ -74,7 +76,7 @@ TargetReport <- function(centers,
     stop("TargetReport requires centers matrix with two columns")
   }
 
-  # Make sure these are numbers
+  # Make sure these coordinates are numbers
   if (typeof(centers) != "double") {
     stop("TargetReport requires centers data that are type double")
   }
@@ -101,6 +103,7 @@ TargetReport <- function(centers,
   centers_list <- split(x = centers_df,
                         f = seq(nrow(centers_df)))
 
+  # Reality checks to ensure necessary files exist
   # key_file
   if (!file.exists(key_file)) {
     stop(paste0("Could not find key_file ", key_file, " for TargetReport"))
@@ -112,12 +115,12 @@ TargetReport <- function(centers,
   if (!file.exists(list_file)) {
     stop(paste0("Could not find list_file ", list_file, " for TargetReport"))
   }
-  # Read in user's list.
+  # Read in user's list
   species_user <- readr::read_csv(file = list_file, col_types = readr::cols())
 
   # TODO: Could be defensive here and check for Species column
 
-  # SplitNames
+  # Names need to be split into common name column and scientific name column
   species_user <- dplyr::bind_cols(species_user,
                                 SplitNames(species_user$Species))
 
@@ -185,7 +188,7 @@ TargetReport <- function(centers,
     message(paste("Missing species count", nrow(species_targets)))
     # nearby.missing <- nearby.obs[!(nearby.obs$comName %in% current.list$Common), ]
 
-    print(head(species_targets))
+    print(utils::head(species_targets))
 
     # Iterate over every value in species_targets$speciesCode
     # For each species remaining, run

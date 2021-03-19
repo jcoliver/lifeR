@@ -9,6 +9,7 @@ TargetReport(
   key_file,
   list_file,
   center_names = NULL,
+  report_filename = "Target-Report",
   max_sites = 5,
   dist = 50,
   back = 4,
@@ -22,8 +23,9 @@ TargetReport(
 }
 \arguments{
 \item{centers}{numeric vector or matrix of latitude and longitude
-coordinates; vector should be of length 2, while matrix should have two
-columns}
+coordinates; vector should be of length 2, e.g. 
+\code{c(latitude, longitude)}, while matrix should have two columns (first 
+column is latitude, second column is longitude)}
 
 \item{key_file}{path to file with eBird API key}
 
@@ -33,6 +35,8 @@ file of observations downloaded from your My eBird page at
 
 \item{center_names}{optional character vector of names to use for each pair
 of latitude and longitude coordinates in \code{centers}}
+
+\item{report_filename}{name of output file}
 
 \item{max_sites}{integer maximum number of sites to return for each pair of
 coordinates defined in \code{centers}}

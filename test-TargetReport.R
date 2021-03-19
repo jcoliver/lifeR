@@ -13,8 +13,8 @@ locs <- c(32.2394119, -110.9387534)
 loc_names <- "CenterOne"
 # locs <- matrix(data = c(45, -109, 39, -111), nrow = 2, byrow = TRUE)
 # loc_names <- c("CenterOne", "CenterTwo")
-keyfile <- "~/Documents/Computing/eBird/ebird-2.0-api-key.txt"
-listfile <- "~/Documents/Computing/eBird/data/year-lists/ebird_world_year_2021_list.csv"
+keyfile <- "ebird-key.txt"
+listfile <- "~/Documents/Personal/ebird-targets/data/year-lists/ebird_world_year_2021_list.csv"
 
 lifeR::TargetReport(centers = locs,
                     list_file = listfile,
