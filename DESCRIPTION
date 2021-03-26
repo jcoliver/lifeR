@@ -14,7 +14,8 @@ Imports:
     jsonlite (>= 1.7.0),
     stringr (>= 1.4.0),
     dplyr (>= 1.0.2),
-    readr (>= 1.4.0)
+    readr (>= 1.4.0),
+    rmarkdown (>= 2.7), 
 RoxygenNote: 7.1.1
 Suggests: 
     testthat

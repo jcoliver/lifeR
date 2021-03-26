@@ -7,7 +7,7 @@ rm(list = ls())
 
 ################################################################################
 
-library(lifeR)
+devtools::load_all()
 
 locs <- c(32.2394119, -110.9387534)
 loc_names <- "CenterOne"
@@ -20,6 +20,8 @@ lifeR::TargetReport(centers = locs,
                     list_file = listfile,
                     center_names = loc_names,
                     key_file = keyfile)
+
+
 
 ################################################################################
 # testing out purrr::map
