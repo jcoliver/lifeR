@@ -2,6 +2,8 @@
 title: "Target Report"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
+params:
+  target_list: NULL
 ---
 
 ```{r setup, include = FALSE}
