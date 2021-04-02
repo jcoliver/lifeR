@@ -9,13 +9,14 @@ Description: More about what it does (maybe more than one line)
 License: BSD_2_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 3.5.0)
 Imports:
     curl (>= 4.3),
     jsonlite (>= 1.7.0),
     stringr (>= 1.4.0),
     dplyr (>= 1.0.2),
     readr (>= 1.4.0),
-    rmarkdown (>= 2.7), 
+    rmarkdown (>= 2.7)
 RoxygenNote: 7.1.1
 Suggests: 
     testthat

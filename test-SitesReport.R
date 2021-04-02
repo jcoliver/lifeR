@@ -16,10 +16,10 @@ loc_names <- "CenterOne"
 keyfile <- "ebird-key.txt"
 listfile <- "~/Documents/Personal/ebird-targets/data/year-lists/ebird_world_year_2021_list.csv"
 
-lifeR::TargetReport(centers = locs,
-                    list_file = listfile,
-                    center_names = loc_names,
-                    key_file = keyfile)
+lifeR::SitesReport(centers = locs,
+                   list_file = listfile,
+                   center_names = loc_names,
+                   key_file = keyfile)
 
 
 

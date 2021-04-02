@@ -37,7 +37,7 @@
 #' information on obtaining a key can be found at the eBird API documentation.
 #'
 #' @importFrom readr read_csv cols
-#' @importFrom dplyr bind_cols n filter select
+#' @import dplyr
 #' @importFrom rmarkdown render
 #' @export
 SitesReport <- function(centers,
@@ -271,8 +271,17 @@ SitesReport <- function(centers,
   }
   # end iteration over each center
 
-  # TODO: Delete this save when done testing
+  # Package the settings of this report to be printed at the end
+  report_details <- list(max_sites = 5,
+                         dist = 50,
+                         back = 4,
+                         hotspot = TRUE,
+                         include_provisional = FALSE,
+                         drop_patterns = c("sp.", "/", "Domestic type", "hybrid"))
+  
+  # TODO: Delete these saves when done testing
   saveRDS(results_list, file = "results-list.Rds")
+  saveRDS(report_details, file = "report-details.Rds")
 
   # Using template, pass info to an RMarkdown template file
   report_template <- system.file("rmd", "Report-Template.Rmd", 
@@ -283,7 +292,8 @@ SitesReport <- function(centers,
                     output_format = output_format,
                     output_file = report_filename, # knitr takes care of extension
                     output_dir = report_dir,
-                    params = list(results_list = results_list),
+                    params = list(results_list = results_list,
+                                  report_details = report_details),
                     quiet = verbose)
 
   # Will need to grab rmarkdown template that lives in inst/rmd like this:

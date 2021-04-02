@@ -1,12 +1,42 @@
 ---
 title: "Top Sites"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
 params:
   results_list: NULL
+  report_details: NULL
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r print_results, include = FALSE}
+# For each result, will want to print
+# The name of the center
+# The map with sites
+# Table for each site with species, ordered by date last seen (most recent first)
+```
+
+## Report details
+
+Settings for this report:
+
+```{r extract_details, include = FALSE}
+  max_sites <- report_details[["max_sites"]]
+  dist <- report_details[["dist"]]
+  back <- report_details[["back"]]
+  hotspot_restrict <- ifelse(test = report_details[["hotspot"]], 
+                             yes = "", 
+                             no = "**not** ")
+  provisional <- ifelse(test = report_details[["include_provisional"]],
+                        yes = "", 
+                        no = "**do not** ")
+  drop_patterns <- report_details[["drop_patterns"]]
+```
+
++ Maximum number of sites to report: `r report_details[["max_sites"]]`  
++ Distance from each center point: `r report_details[["dist"]]` km
++ Days covered: `r Sys.Date() - report_details[["back"]]` through `r Sys.Date()`
++ Results `r hotspot_restrict`restricted to hotspots
++ Results `r provisional`include provisional observations
++ Species with the following patterns in their names were excluded: `r paste0(drop_patterns, collapse = ", ")`
