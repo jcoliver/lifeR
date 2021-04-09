@@ -7,14 +7,61 @@ params:
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+suppressPackageStartupMessages(library(dplyr))
 ```
 
-```{r print_results, include = FALSE}
+```{r print_results, echo = FALSE, results = "asis"}
 # For each result, will want to print
 # The name of the center
 # The map with sites
 # Table for each site with species, ordered by date last seen (most recent first)
+for (i in 1:length(params$results_list)) {
+  center_info <- params$results_list[[i]]$center_info
+  center_results <- params$results_list[[i]]$results
+  cat("#", center_info$name[1], "Top Sites\n\n")
+  
+  # See how many new species at each site, retaining lat & lng for printing map
+  # had to get creative to get lat & long through (hence no summarize)
+  sites <- center_results %>%
+    group_by(locName) %>%
+    mutate(num_new = n()) %>%
+    select(locName, num_new, lat, lng) %>%
+    distinct(locName, .keep_all = TRUE) %>%
+    arrange(desc(num_new))
+  
+  cat("MAP HERE\n\n")
+  
+  for (s in 1:nrow(sites)) {
+    site_name <- sites$locName[s]
+    site_new <- sites$num_new[s]
+    site_lat <- sites$lat[s]
+    site_lng <- sites$lat[s]
+    
+    # Pull out only columns of interest, renaming as appropriate
+    site_results <- center_results %>%
+      filter(locName == site_name) %>%
+      select(comName, howMany, obsDt) %>%
+      mutate(`Last Seen` = as.Date(obsDt)) %>%
+      select(-obsDt) %>%
+      rename(Species = comName,
+             Count = howMany) %>%
+      arrange(desc(`Last Seen`))
+
+    # Create the Google Map URL from coordinates
+    google.maps.url <- paste0("http://maps.google.com/maps?q=",
+                            site_lat, ",", site_lng)
+
+    # Print info for site      
+    cat("##", site_name, "\n\n")
+    cat("###", site_new, "species\n\n")
+    cat("Site on Google Maps: [", site_lat, ", ", site_lng, "](",
+        google.maps.url, "))\n\n", sep = "")
+    print(knitr::kable(x = site_results))
+    cat("\n\n")    
+    
+  }
+}
 ```
 
 ## Report details
