@@ -27,8 +27,9 @@ DropPatterns <- function(data,
     # Find indicies of rows with matching names
     to_drop <- grep(x = data[, colname],
                     pattern = paste0(patterns, collapse = "|"))
-    data <- data[-to_drop, ]
-
+    if (length(to_drop) > 0) {
+      data <- data[-to_drop, ]
+    }
   }
   return(data)
 }
