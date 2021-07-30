@@ -5,9 +5,11 @@
 #' \code{c(latitude, longitude)}, while matrix should have two columns (first 
 #' column is latitude, second column is longitude)
 #' @param key_file path to file with eBird API key
-#' @param list_file path to file of user's observations; this should be a csv
-#' file of observations downloaded from your My eBird page at
+#' @param list_file DEPRECATED; pass vector of common names to 
+#' \code{species_seen} instead. path to file of user's observations; this 
+#' should be a csv file of observations downloaded from your My eBird page at 
 #' \url{https://ebird.org/myebird}
+#' @param species_seen character vector of species that have already been seen
 #' @param center_names optional character vector of names to use for each pair
 #' of latitude and longitude coordinates in \code{centers}
 #' @param report_filename name of output file
@@ -36,33 +38,48 @@
 #' to build the report. Queries to the eBird API require a user key; more
 #' information on obtaining a key can be found at the eBird API documentation.
 #'
+#' @examples 
+#' \dontrun{
+#'   # Read in data downloaded from eBird
+#'   list_file <- system.file("extdata", "example-list.csv", package = "lifeR")
+#'   user_list <- read.csv(file = list_file)
+#'   # Only common names are required
+#'   species_seen <- SplitNames(x = user_list$Species)$Common
+#' 
+#'   # A single center requires vector of coordinates
+#'   locs <- c(45, -109)
+#'   SitesReport(centers = locs, key_file = "ebird-key.txt", 
+#'   species_seen = species_seen)
+#'   
+#'   # For multiple centers, pass matrix to centers argument
+#'   loc_mat <- matrix(data = c(33, -109, 39, -119.1), nrow = 2, byrow = TRUE)
+#'   loc_names <- c("Brushy Mountain", "Yerington)
+#'   SitesReport(centers = loc_mat, key_file = "ebird-key.txt", 
+#'   species_seen = species_seen, center_names = loc_names)
+#' }
 #' @importFrom readr read_csv cols
 #' @import dplyr
 #' @importFrom rmarkdown render
 #' @export
 SitesReport <- function(centers,
-                         key_file, # TODO: Make flexible so user could pass key string instead?
-                         list_file, # TODO: Maybe make this null and add functionality
-                         center_names = NULL,
-                         report_filename = "Goals-Report", #TODO: suffix?
-                         report_dir = getwd(),
-                         max_sites = 5,
-                         dist = 50,
-                         back = 4,
-                         hotspot = TRUE,
-                         include_provisional = FALSE,
-                         max_tries = 5,
-                         timeout_sec = 30,
-                         verbose = TRUE, # TODO: default should be FALSE?
-                         drop_patterns = c("sp.", "/", "Domestic type", "hybrid")) {
-
+                        key_file, # TODO: Make flexible so user could pass key string instead?
+                        list_file, # DEPRECATED
+                        species_seen, # TODO: Maybe make this null and add functionality
+                        center_names = NULL,
+                        report_filename = "Goals-Report", #TODO: suffix?
+                        report_dir = getwd(),
+                        max_sites = 5,
+                        dist = 50,
+                        back = 4,
+                        hotspot = TRUE,
+                        include_provisional = FALSE,
+                        max_tries = 5,
+                        timeout_sec = 30,
+                        verbose = TRUE, # TODO: default should be FALSE?
+                        drop_patterns = c("sp.", "/", "Domestic type", "hybrid")) {
+  
   # TODO: consider how we will iterate. Will need to create a list (or data
   # frame) that has coordinate pairs AND center names (if they exist).
-
-  # TODO: Need to be explicit in documentation about what order latitude and
-  # longitude appear and if named elements or column names is supported.
-  # Currently assume first element/column is latitude and second element is
-  # longitude
 
   # centers will need to ultimately be a list, but start by making sure it is
   # a matrix, doing transformation of data frame or vector as appropriate
@@ -84,9 +101,9 @@ SitesReport <- function(centers,
     stop("SitesReport requires centers data that are type double")
   }
 
-  # Add in names if user passed those along; need to make sure they are the
-  # right length. If not, message user and proceed as if user had not provided
-  # names
+  # Add in center names if user passed those along; need to make sure they are 
+  # the right length. If not, message user and proceed as if user had not 
+  # provided names
   user_supplied_names <- FALSE
   if (!is.null(center_names)) {
     if (length(center_names) == nrow(centers)) {
@@ -129,7 +146,7 @@ SitesReport <- function(centers,
 
   # Names need to be split into common name column and scientific name column
   species_user <- dplyr::bind_cols(species_user,
-                                SplitNames(species_user$Species))
+                                   SplitNames(species_user$Species))
 
   message(paste("User's species count", nrow(species_user)))
 
@@ -145,7 +162,6 @@ SitesReport <- function(centers,
   #                              max_tries = max_tries,
   #                              timeout_sec = timeout_sec,
   #                              verbose = verbose)
-
 
   save_queries <- TRUE
 
@@ -294,21 +310,7 @@ SitesReport <- function(centers,
                     output_dir = report_dir,
                     params = list(results_list = results_list,
                                   report_details = report_details),
-                    quiet = verbose)
-
-  # Will need to grab rmarkdown template that lives in inst/rmd like this:
-  # report_template <- system.file("rmd", "Report-Template.Rmd", package = "lifeR")
-  # See https://stackoverflow.com/questions/30377213/how-to-include-rmarkdown-file-in-r-package
-  # and https://r-pkgs.org/inst.html
-  # Parameters can be passed through params argument of rmarkdown::render
-  # See https://rmarkdown.rstudio.com/lesson-6.html and
-  # https://bookdown.org/yihui/rmarkdown/params-knit.html
-  # rmarkdown::render(input = report_template, output_format = "html")
-  # Parameters passed to params in rmarkdown::render MUST be declared in the
-  # YAML header. Parameters can include complex classes such as list.
-  # Remember to refer to parameters as part of the params list object, e.g.
-  # params$param_one, params$param_two
-
+                    quiet = !verbose)
 }
 
 #' Perform search and site selection for a single coordinate pair

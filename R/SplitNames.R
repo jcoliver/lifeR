@@ -11,6 +11,13 @@
 #'
 #' @return data.frame of two columns, \code{Common} and \code{Scientific}
 #'
+#' @examples 
+#' # Read in data downloaded from eBird
+#' user_list <- system.file("extdata", "example-list.csv", package = "lifeR")
+#' species_seen <- SplitNames(x = user_list$Species)
+#' # If only common names are required
+#' species_seen <- SplitNames(x = user_list$Species)$Common
+#' 
 #' @importFrom stringr str_split_fixed str_trim
 #' @export
 SplitNames <- function(x, delim = " - ") {
