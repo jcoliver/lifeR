@@ -4,7 +4,9 @@
 #' coordinates; vector should be of length 2, e.g. 
 #' \code{c(latitude, longitude)}, while matrix should have two columns (first 
 #' column is latitude, second column is longitude)
-#' @param key_file path to file with eBird API key
+#' @param key_file DEPRECATED; pass single-element character vector of actual 
+#' key to \code{ebird_key} instead. path to file with eBird API key
+#' @param ebird_key character vector with eBird API key
 #' @param list_file DEPRECATED; pass vector of common names to 
 #' \code{species_seen} instead. path to file of user's observations; this 
 #' should be a csv file of observations downloaded from your My eBird page at 
@@ -44,27 +46,30 @@
 #'   list_file <- system.file("extdata", "example-list.csv", package = "lifeR")
 #'   user_list <- read.csv(file = list_file)
 #'   # Only common names are required
-#'   species_seen <- SplitNames(x = user_list$Species)$Common
+#'   my_species <- SplitNames(x = user_list$Species)$Common
+#'   # Read in eBird API key from a text file
+#'   key <- scan(file = "ebird-key.txt", what = "character")
 #' 
 #'   # A single center requires vector of coordinates
 #'   locs <- c(45, -109)
-#'   SitesReport(centers = locs, key_file = "ebird-key.txt", 
-#'   species_seen = species_seen)
+#'   SitesReport(centers = locs, ebird_key = key, 
+#'   species_seen = my_species)
 #'   
 #'   # For multiple centers, pass matrix to centers argument
 #'   loc_mat <- matrix(data = c(33, -109, 39, -119.1), nrow = 2, byrow = TRUE)
 #'   loc_names <- c("Brushy Mountain", "Yerington)
-#'   SitesReport(centers = loc_mat, key_file = "ebird-key.txt", 
-#'   species_seen = species_seen, center_names = loc_names)
+#'   SitesReport(centers = loc_mat, ebird_key = key, 
+#'   species_seen = my_species, center_names = loc_names)
 #' }
 #' @importFrom readr read_csv cols
 #' @import dplyr
 #' @importFrom rmarkdown render
 #' @export
 SitesReport <- function(centers,
-                        key_file, # TODO: Make flexible so user could pass key string instead?
+                        key_file, # DEPRECATED
+                        ebird_key,
                         list_file, # DEPRECATED
-                        species_seen, # TODO: Maybe make this null and add functionality
+                        species_seen,
                         center_names = NULL,
                         report_filename = "Goals-Report", #TODO: suffix?
                         report_dir = getwd(),
@@ -78,8 +83,9 @@ SitesReport <- function(centers,
                         verbose = TRUE, # TODO: default should be FALSE?
                         drop_patterns = c("sp.", "/", "Domestic type", "hybrid")) {
   
-  # TODO: consider how we will iterate. Will need to create a list (or data
-  # frame) that has coordinate pairs AND center names (if they exist).
+  # TODO: Output format of report is hard coded as html; will need to make this 
+  # an argument, but will need to be careful with what rmarkdown::render is 
+  # looking for
 
   # centers will need to ultimately be a list, but start by making sure it is
   # a matrix, doing transformation of data frame or vector as appropriate
@@ -125,48 +131,19 @@ SitesReport <- function(centers,
 
   # TODO: Delete this save when done testing
   saveRDS(centers_list, file = "centers-list.Rds")
-  
-  
-  # Reality checks to ensure necessary files exist
-  # key_file
-  if (!file.exists(key_file)) {
-    stop(paste0("Could not find key_file ", key_file, " for SitesReport"))
+
+  # If user passed a list of species they have seen, assign that here  
+  species_user <- character(0)
+  if (!is.null(species_seen)) {
+    species_user <- species_seen
+    message(paste("User's species count", length(species_user)))
   }
-
-  key <- scan(file = key_file, what = "character")
-
-  # list_file (may be optional later on)
-  if (!file.exists(list_file)) {
-    stop(paste0("Could not find list_file ", list_file, " for SitesReport"))
-  }
-  # Read in user's list
-  species_user <- readr::read_csv(file = list_file, col_types = readr::cols())
-
-  # TODO: Could be defensive here and check for Species column
-
-  # Names need to be split into common name column and scientific name column
-  species_user <- dplyr::bind_cols(species_user,
-                                   SplitNames(species_user$Species))
-
-  message(paste("User's species count", nrow(species_user)))
-
-  # Use purrr::map to iterate over each coordinate pair?
-  # center_results <- purrr::map(centers_list,
-  #                              CenterQuery, # pass parameters to CenterQuery
-  #                              key = key,
-  #                              species_user = species_user,
-  #                              dist = dist,
-  #                              back = back,
-  #                              hotspot = hotspot,
-  #                              include_provisional = include_provisional,
-  #                              max_tries = max_tries,
-  #                              timeout_sec = timeout_sec,
-  #                              verbose = verbose)
-
+  
+  # TODO: delete when done
   save_queries <- TRUE
 
-  # list to store results of various queries; each element will have two child
-  # elements:
+  # list to store results of various queries; each element will be a list with 
+  # have two child elements:
   #    center_info: the original centers_list data.frame
   #    results:     information for the top sites to report
   results_list <- list()
@@ -185,6 +162,7 @@ SitesReport <- function(centers,
       #### START only this remains following testing
       # Do RecentNearby query to find all species recently seen within a radius
       # of dist from the coordinates of the current center
+message(paste0("About to query coordinates ", center$lat, ", ", center$lng))
       recent_obs <- RecentNearby(key = key,
                                  lat = center$lat,
                                  lng = center$lng,
@@ -195,6 +173,8 @@ SitesReport <- function(centers,
                                  max_tries = max_tries,
                                  timeout_sec = timeout_sec,
                                  verbose = verbose)
+message(paste0("recentNearby returned ", nrow(recent_obs$obs), " records"))      
+      
       #### END only this remains following testing
       if (save_queries) {
         message(paste("Saving to ", rn_query_save))
@@ -202,90 +182,110 @@ SitesReport <- function(centers,
       }
     }
 
-    # Pull out the species list from the RecentNearby object
-    species_all <- recent_obs$obs
-
-    # DropPatterns
-    species_all <- DropPatterns(data = species_all)
-
-    message(paste("All species count", nrow(species_all)))
-
-    # Perform set difference, getting list of all nearby species that are *NOT*
-    # on user's list: species_unseen = species_all \ species_user
-    species_unseen <- species_all[!(species_all$comName %in% species_user$Common), ]
-
-    message(paste("Missing species count", nrow(species_unseen)))
-    # nearby.missing <- nearby.obs[!(nearby.obs$comName %in% current.list$Common), ]
-
-    # TODO: skip all this saving junk once it works
-    # See START/END comments for boundaries
-    rns_query_save <- paste0(center$name, "_rns.Rds")
-    if (file.exists(rns_query_save)) {
-      message(paste("Loading in from ", rns_query_save))
-      nearby_list <- readRDS(file = rns_query_save)
+    # See if any observations were returned; if not, let the user know and set
+    # results element to NULL
+    if (is.null(recent_obs$obs)) {
+      message(paste0("No recent observations near ", center$name, " found."))
+      results_list[[i]] <- list(center_info = center,
+                                results = NULL)
     } else {
-      #### START only this remains following testing
-      # List to hold nearby observations of species to be seen; will be indexed 
-      # by eBird's species code
-      nearby_list <- list()
+      # Pull out the species list from the RecentNearby object
+      species_all <- recent_obs$obs
       
-      # For each species remaining in species_unseen$speciesCode, run 
-      # RecentNearbySpecies
-      for (species_code in species_unseen$speciesCode) {
-        # message(paste("Querying", speciesCode))
+      # DropPatterns removes things like "hybrid", "sp."
+      species_all <- DropPatterns(data = species_all)
+      
+      # TODO: delete when things work
+      message(paste("All species count", nrow(species_all)))
+      
+      # Perform set difference, getting list of all nearby species that are *NOT*
+      # on user's list: species_unseen = species_all \ species_user; if user did 
+      # not pass list of species already seen, just use all values remaining in 
+      # species_all as species_unseen
+      
+      if (length(species_user) > 0) {
+        species_unseen <- species_all[!(species_all$comName %in% species_user), ]
+      } else {
+        species_unseen <- species_all
+      }
+      
+      message(paste("Missing species count", nrow(species_unseen)))
+      
+      # TODO: skip all this saving junk once it works
+      # See START/END comments for boundaries
+      rns_query_save <- paste0(center$name, "_rns.Rds")
+      if (file.exists(rns_query_save)) {
+        message(paste("Loading in from ", rns_query_save))
+        nearby_list <- readRDS(file = rns_query_save)
+      } else {
+        #### START only this remains following testing
+        # List to hold nearby observations of species to be seen; will be indexed 
+        # by eBird's species code
+        nearby_list <- list()
         
-        nearby_sp_obs <- RecentNearbySpecies(key = key,
-                                             species_code = species_code,
-                                             lat = center$lat,
-                                             lng = center$lng,
-                                             dist = dist,
-                                             back = back,
-                                             hotspot = hotspot,
-                                             include_provisional = include_provisional,
-                                             max_tries = max_tries,
-                                             timeout_sec = timeout_sec,
-                                             verbose = verbose)
-        # Extract just the observations data frame from the query, but only if 
-        # there were results returned (obs is not NULL)
-        if (!is.null(nearby_sp_obs$obs)) {
-          nearby_list[[species_code]] <- nearby_sp_obs$obs
+        # For each species remaining in species_unseen$speciesCode, run 
+        # RecentNearbySpecies
+        for (species_code in species_unseen$speciesCode) {
+          # message(paste("Querying", speciesCode))
+          
+          nearby_sp_obs <- RecentNearbySpecies(key = key,
+                                               species_code = species_code,
+                                               lat = center$lat,
+                                               lng = center$lng,
+                                               dist = dist,
+                                               back = back,
+                                               hotspot = hotspot,
+                                               include_provisional = include_provisional,
+                                               max_tries = max_tries,
+                                               timeout_sec = timeout_sec,
+                                               verbose = verbose)
+          # Extract just the observations data frame from the query, but only if 
+          # there were results returned (obs is not NULL)
+          if (!is.null(nearby_sp_obs$obs)) {
+            nearby_list[[species_code]] <- nearby_sp_obs$obs
+          }
+          Sys.sleep(time = 0.5) # So we're not hammering on eBird's server
         }
-        Sys.sleep(time = 0.5) # So we're not hammering on eBird's server
+        #### END only this remains following testing
+        if (save_queries) {
+          message(paste("Saving to ", rns_query_save))
+          saveRDS(nearby_list, file = rns_query_save)
+        }
       }
-      #### END only this remains following testing
-      if (save_queries) {
-        message(paste("Saving to ", rns_query_save))
-        saveRDS(nearby_list, file = rns_query_save)
-      }
-    }
-    
-    # Put all results together in single data frame
-    all_nearby <- dplyr::bind_rows(nearby_list)
-
-    # Do counts for each site to identify which sites have the most unseen 
-    # species, only retain results for top X sites, where X = max_sites
-    top_site_counts <- all_nearby %>%
-      dplyr::group_by(locId) %>%
-      dplyr::summarize(total_unseen = n()) %>%
-      dplyr::arrange(dplyr::desc(total_unseen)) %>%
-      dplyr::slice(1:max_sites)
+      
+      # Put all results together in single data frame
+      all_nearby <- dplyr::bind_rows(nearby_list)
+      
+      if (nrow(all_nearby) < 1) {
+        message(paste0("No sites found for center ", center$name))
+        results_list[[i]] <- list(center_info = center,
+                                  results = NULL)
+      } else {
         
-    # grab the data from those sites identified in top_sites
-    top_nearby <- all_nearby %>%
-      filter(locId %in% top_site_counts$locId) %>%
-      select(-obsValid, - obsReviewed, -locationPrivate, -subId)
+        # Do counts for each site to identify which sites have the most unseen 
+        # species, only retain results for top X sites, where X = max_sites
+        top_site_counts <- all_nearby %>%
+          dplyr::group_by(locId) %>%
+          dplyr::summarize(total_unseen = n()) %>%
+          dplyr::arrange(dplyr::desc(total_unseen)) %>%
+          dplyr::slice(1:max_sites)
+        
+        # grab the data from those sites identified in top_sites
+        top_nearby <- all_nearby %>%
+          filter(locId %in% top_site_counts$locId) %>%
+          select(-obsValid, - obsReviewed, -locationPrivate, -subId)
+        
+        # Create the results_list element at the appropriate index (i). It will be 
+        # a 2-element list, with the original center information (lat, lng, name) 
+        # and the results for the top sites; will be passed to RMarkdown template
+        # for additional formatting & processing
+        results_list[[i]] <- list(center_info = center,
+                                  results = top_nearby)
+      } # end conditional for at least one site with missing species returned
+      
+    } # end conditional for at least one nearby observation found
     
-    # attach to the 
-    # centers_list element, which will be passed to the RMarkdown template for 
-    # additional formatting & processing
-    # Create the results_list element at the appropriate index (i). It will be 
-    # a 2-element list, with the original center information (lat, lng, name) 
-    # and the results for the top sites
-    results_list[[i]] <- list(center_info = center,
-                              results = top_nearby)
-
-  }
-  # end iteration over each center
+  } # end iteration over each center
 
   # Package the settings of this report to be printed at the end
   report_details <- list(max_sites = 5,
@@ -302,7 +302,8 @@ SitesReport <- function(centers,
   # Using template, pass info to an RMarkdown template file
   report_template <- system.file("rmd", "Report-Template.Rmd", 
                                  package = "lifeR")
-  
+
+  # TODO: output_format shouldn't be hard-coded  
   output_format <- "html_document"  
   rmarkdown::render(input = report_template, 
                     output_format = output_format,

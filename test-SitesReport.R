@@ -9,23 +9,28 @@ rm(list = ls())
 
 devtools::load_all()
 
-locs <- c(32.2394119, -110.9387534)
-loc_names <- "CenterOne"
-# locs <- matrix(data = c(45, -109, 39, -111), nrow = 2, byrow = TRUE)
-# loc_names <- c("CenterOne", "CenterTwo")
+# locs <- c(32.2394119, -110.9387534)
+# loc_names <- "CenterOne"
+# Three centers, the second one is unlikely to return any results
+locs <- matrix(data = c(45, -109, 39, -111, 38, -122), nrow = 3, byrow = TRUE)
+loc_names <- c("CenterOne", "CenterTwo", "CenterThree")
 keyfile <- "ebird-key.txt"
 listfile <- "~/Documents/Personal/ebird-targets/data/year-lists/ebird_world_year_2021_list.csv"
 
+# Read in key from file
+key <- scan(file = keyfile, what = "character")
+# Read in file with species that have been seen
+seen <- read.csv(file = listfile)
+# Pull out the common name
+my_species <- SplitNames(x = seen$Species)$Common
+
 lifeR::SitesReport(centers = locs,
-                   list_file = listfile,
-                   center_names = loc_names,
-                   key_file = keyfile)
-
-
+                   center_names = loc_names, 
+                   ebird_key = key,
+                   species_seen = my_species)
 
 ################################################################################
 # testing out purrr::map
-
 
 df <- data.frame(lon = c(-109, -110, -111),
                  lat = c(39, 42, 41),
