@@ -35,9 +35,15 @@ for (i in 1:length(params$results_list)) {
       select(locName, num_new, lat, lng) %>%
       distinct(locName, .keep_all = TRUE) %>%
       arrange(desc(num_new))
-    
-    cat("MAP HERE\n\n")
-    
+
+    suppressMessages(
+      sites_map <- lifeR:::MapSites(sites = sites)
+    )
+    print(sites_map)
+
+    # Make new line after map is printed
+    cat("\n\n")
+
     for (s in 1:nrow(sites)) {
       site_name <- sites$locName[s]
       site_new <- sites$num_new[s]
