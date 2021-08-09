@@ -59,13 +59,13 @@ MapSites <- function(sites) {
   # Edge case is Mt. Lemmon sites, which have unique info cutoff when substring
   # only pulls out 12 characters
   sites_map <- ggmap::ggmap(ggmap = center_map) +
-    geom_point(data = sites,
-               mapping = aes(x = lng, y = lat, color = print_name),
+    ggplot2::geom_point(data = sites,
+               mapping = ggplot2::aes(x = lng, y = lat, color = print_name),
                size = 3) +
-    scale_color_brewer(name = "Site", palette = "Dark2") +
-    theme_minimal() +
-    xlab(label = "Longitude") +
-    ylab(label = "Latitude")
+    ggplot2::scale_color_brewer(name = "Site", palette = "Dark2") +
+    ggplot2::theme_minimal() +
+    ggplot2::xlab(label = "Longitude") +
+    ggplot2::ylab(label = "Latitude")
 
   return(sites_map)
 }

@@ -32,10 +32,14 @@ for (i in 1:length(params$results_list)) {
     sites <- center_results %>%
       group_by(locName) %>%
       mutate(num_new = n()) %>%
-      select(locName, num_new, lat, lng) %>%
+      select(locName, locId, num_new, lat, lng) %>%
       distinct(locName, .keep_all = TRUE) %>%
       arrange(desc(num_new))
 
+    # Before passing to map function, add row number to site name, for easier
+    # navigation
+    sites$locName <- paste0(rownames(sites), " - ", sites$locName)
+    
     suppressMessages(
       sites_map <- lifeR:::MapSites(sites = sites)
     )
@@ -46,6 +50,7 @@ for (i in 1:length(params$results_list)) {
 
     for (s in 1:nrow(sites)) {
       site_name <- sites$locName[s]
+      site_id <- sites$locId[s]
       site_new <- sites$num_new[s]
       site_lat <- sites$lat[s]
       site_lng <- sites$lat[s]
@@ -61,14 +66,20 @@ for (i in 1:length(params$results_list)) {
         arrange(desc(`Last Seen`))
       
       # Create the Google Map URL from coordinates
-      google.maps.url <- paste0("http://maps.google.com/maps?q=",
+      google_maps_url <- paste0("http://maps.google.com/maps?q=",
                                 site_lat, ",", site_lng)
+
+      # Create the eBird URL from locId (need to test for non-hotspot 
+      # localities?)
+      eBird_url <- paste0("https://ebird.org/hotspot/",
+                          site_id)
       
       # Print info for site      
       cat("##", site_name, "\n\n")
+      cat("eBird hotspot: [", eBird_url, "](", eBird_url, ")\n\n", sep = "")
       cat("###", site_new, "species\n\n")
       cat("Site on Google Maps: [", site_lat, ", ", site_lng, "](",
-          google.maps.url, ")\n\n", sep = "")
+          google_maps_url, ")\n\n", sep = "")
       print(knitr::kable(x = site_results))
       cat("\n\n")    
       
