@@ -17,7 +17,9 @@ Imports:
     knitr (>= 1.31),
     readr (>= 1.4.0),
     rmarkdown (>= 2.7),
-    stringr (>= 1.4.0)
+    stringr (>= 1.4.0),
+    ggplot2 (>= 3.3.3),
+    ggmap (>= 3.0.0)
 RoxygenNote: 7.1.1
 Suggests: 
     testthat

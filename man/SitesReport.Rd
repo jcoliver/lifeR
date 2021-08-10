@@ -6,11 +6,12 @@
 \usage{
 SitesReport(
   centers,
-  key_file,
-  list_file,
+  ebird_key,
+  species_seen,
   center_names = NULL,
   report_filename = "Goals-Report",
   report_dir = getwd(),
+  report_format = c("html", "pdf"),
   max_sites = 5,
   dist = 50,
   back = 4,
@@ -28,18 +29,20 @@ coordinates; vector should be of length 2, e.g.
 \code{c(latitude, longitude)}, while matrix should have two columns (first 
 column is latitude, second column is longitude)}
 
-\item{key_file}{path to file with eBird API key}
+\item{ebird_key}{character vector with eBird API key}
 
-\item{list_file}{path to file of user's observations; this should be a csv
-file of observations downloaded from your My eBird page at
-\url{https://ebird.org/myebird}}
+\item{species_seen}{character vector of species that have already been seen}
 
 \item{center_names}{optional character vector of names to use for each pair
 of latitude and longitude coordinates in \code{centers}}
 
-\item{report_filename}{name of output file}
+\item{report_filename}{name of output file without file extension (see 
+\code{report_format})}
 
 \item{report_dir}{destination folder for the output file}
+
+\item{report_format}{file format for report; takes one of two values: "html" 
+and "pdf"}
 
 \item{max_sites}{integer maximum number of sites to return for each pair of
 coordinates defined in \code{centers}}

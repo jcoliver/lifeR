@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = FALSE)
 suppressPackageStartupMessages(library(dplyr))
 ```
 
-```{r print_results, echo = FALSE, results = "asis"}
+```{r print_results, results = "asis"}
 # For each result, will want to print
 # The name of the center
 # The map with sites
@@ -36,10 +36,6 @@ for (i in 1:length(params$results_list)) {
       distinct(locName, .keep_all = TRUE) %>%
       arrange(desc(num_new))
 
-    # Before passing to map function, add row number to site name, for easier
-    # navigation
-    sites$locName <- paste0(rownames(sites), " - ", sites$locName)
-    
     suppressMessages(
       sites_map <- lifeR:::MapSites(sites = sites)
     )
@@ -75,9 +71,12 @@ for (i in 1:length(params$results_list)) {
                           site_id)
       
       # Print info for site      
-      cat("##", site_name, "\n\n")
-      cat("eBird hotspot: [", eBird_url, "](", eBird_url, ")\n\n", sep = "")
+      cat("## ", s, ". ", site_name, "\n\n", sep = "")
       cat("###", site_new, "species\n\n")
+      # Only print hotspot link if it's actually a hotspot
+      if(nchar(site_id) > 0) {
+        cat("eBird hotspot: [", eBird_url, "](", eBird_url, ")\n\n", sep = "")
+      }
       cat("Site on Google Maps: [", site_lat, ", ", site_lng, "](",
           google_maps_url, ")\n\n", sep = "")
       print(knitr::kable(x = site_results))
@@ -110,7 +109,7 @@ Settings for this report:
   drop_patterns <- report_details[["drop_patterns"]]
 ```
 
-+ Maximum number of sites to report: `r report_details[["max_sites"]]`  
++ Maximum number of sites to report: `r report_details[["max_sites"]]`
 + Distance from each center point: `r report_details[["dist"]]` km
 + Days covered: `r Sys.Date() - report_details[["back"]]` through `r Sys.Date()`
 + Results `r hotspot_restrict`restricted to hotspots

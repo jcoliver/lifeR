@@ -24,3 +24,11 @@ caerulescens". This function provides a means of separating the common name
 (Snow Goose) from the scientific name (Anser caerulescens) into two separate
 columns.
 }
+\examples{
+# Read in data downloaded from eBird
+user_list <- system.file("extdata", "example-list.csv", package = "lifeR")
+species_seen <- SplitNames(x = user_list$Species)
+# If only common names are required
+species_seen <- SplitNames(x = user_list$Species)$Common
+
+}

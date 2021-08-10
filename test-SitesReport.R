@@ -27,6 +27,7 @@ my_species <- SplitNames(x = seen$Species)$Common
 lifeR::SitesReport(centers = locs,
                    center_names = loc_names, 
                    ebird_key = key,
+                   report_format = "html",
                    species_seen = my_species)
 
 ################################################################################

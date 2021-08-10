@@ -84,8 +84,8 @@ RecentNearby <- function(key,
         # If query returns zero observations, it returns an empty JSON object
         # "[]"
         if (nchar(ebirdJSON) == 2) {
-          # This looks odd, but it is how we assign value is assigned to
-          # observations TODO: this block should be an internalized function?
+          # This looks odd, but it is how we assign value is assigned to zero
+          # observations
           NULL
         } else {
           jsonlite::fromJSON(txt = ebirdJSON)

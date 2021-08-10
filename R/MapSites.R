@@ -13,12 +13,15 @@
 MapSites <- function(sites) {
 
   # values coming in from data frame 'sites':
-  # locName, num_new, lat, lng
+  # locName, locId, num_new, lat, lng
 
+  # Add numbers for easier navigating
+  sites$locName <- paste0(rownames(sites), ". ", sites$locName)
+  
   # Make a shorter version of the location name for map
   sites$print_name <- substr(x = sites$locName,
                              start = 1, 
-                             stop = 12)
+                             stop = 16)
   # Add in the number of missing species
   sites$print_name <- paste0(sites$print_name, " (", sites$num_new, ")")
 
@@ -47,17 +50,15 @@ MapSites <- function(sites) {
   right <- ceiling(max(sites$lng))
   top <- ceiling(max(sites$lat))
   bottom <- floor(min(sites$lat))
-
+  
   map_bounds <- c(left, bottom, right, top)
   
-  # TODO: Need catch to deal with time out of ggmap::get_map
+  # TODO: Need catch to deal with time out of ggmap::get_map?
   center_map <- ggmap::get_map(location = map_bounds, 
                                source = "stamen", 
                                maptype = "terrain")
 
-  # TODO: Need to color by site name (locName), but use print_name for legend
-  # Edge case is Mt. Lemmon sites, which have unique info cutoff when substring
-  # only pulls out 12 characters
+  # Need to color by site name (locName), but use print_name for legend
   sites_map <- ggmap::ggmap(ggmap = center_map) +
     ggplot2::geom_point(data = sites,
                mapping = ggplot2::aes(x = lng, y = lat, color = print_name),

@@ -4,18 +4,15 @@
 #' coordinates; vector should be of length 2, e.g. 
 #' \code{c(latitude, longitude)}, while matrix should have two columns (first 
 #' column is latitude, second column is longitude)
-#' @param key_file DEPRECATED; pass single-element character vector of actual 
-#' key to \code{ebird_key} instead. path to file with eBird API key
 #' @param ebird_key character vector with eBird API key
-#' @param list_file DEPRECATED; pass vector of common names to 
-#' \code{species_seen} instead. path to file of user's observations; this 
-#' should be a csv file of observations downloaded from your My eBird page at 
-#' \url{https://ebird.org/myebird}
 #' @param species_seen character vector of species that have already been seen
 #' @param center_names optional character vector of names to use for each pair
 #' of latitude and longitude coordinates in \code{centers}
-#' @param report_filename name of output file
+#' @param report_filename name of output file without file extension (see 
+#' \code{report_format})
 #' @param report_dir destination folder for the output file
+#' @param report_format file format for report; takes one of two values: "html" 
+#' and "pdf"
 #' @param max_sites integer maximum number of sites to return for each pair of
 #' coordinates defined in \code{centers}
 #' @param dist numeric radius (in kilometers) of area from each point defined
@@ -66,13 +63,12 @@
 #' @importFrom rmarkdown render
 #' @export
 SitesReport <- function(centers,
-                        key_file, # DEPRECATED
                         ebird_key,
-                        list_file, # DEPRECATED
                         species_seen,
                         center_names = NULL,
-                        report_filename = "Goals-Report", #TODO: suffix?
+                        report_filename = "Goals-Report",
                         report_dir = getwd(),
+                        report_format = c("html", "pdf"),
                         max_sites = 5,
                         dist = 50,
                         back = 4,
@@ -83,10 +79,6 @@ SitesReport <- function(centers,
                         verbose = TRUE, # TODO: default should be FALSE?
                         drop_patterns = c("sp.", "/", "Domestic type", "hybrid")) {
   
-  # TODO: Output format of report is hard coded as html; will need to make this 
-  # an argument, but will need to be careful with what rmarkdown::render is 
-  # looking for
-
   # centers will need to ultimately be a list, but start by making sure it is
   # a matrix, doing transformation of data frame or vector as appropriate
   if (is.data.frame(centers)) {
@@ -162,7 +154,6 @@ SitesReport <- function(centers,
       #### START only this remains following testing
       # Do RecentNearby query to find all species recently seen within a radius
       # of dist from the coordinates of the current center
-message(paste0("About to query coordinates ", center$lat, ", ", center$lng))
       recent_obs <- RecentNearby(key = key,
                                  lat = center$lat,
                                  lng = center$lng,
@@ -173,8 +164,7 @@ message(paste0("About to query coordinates ", center$lat, ", ", center$lng))
                                  max_tries = max_tries,
                                  timeout_sec = timeout_sec,
                                  verbose = verbose)
-message(paste0("recentNearby returned ", nrow(recent_obs$obs), " records"))      
-      
+
       #### END only this remains following testing
       if (save_queries) {
         message(paste("Saving to ", rn_query_save))
@@ -193,7 +183,8 @@ message(paste0("recentNearby returned ", nrow(recent_obs$obs), " records"))
       species_all <- recent_obs$obs
       
       # DropPatterns removes things like "hybrid", "sp."
-      species_all <- DropPatterns(data = species_all)
+      species_all <- DropPatterns(data = species_all, 
+                                  patterns = drop_patterns)
       
       # TODO: delete when things work
       message(paste("All species count", nrow(species_all)))
@@ -303,8 +294,10 @@ message(paste0("recentNearby returned ", nrow(recent_obs$obs), " records"))
   report_template <- system.file("rmd", "Report-Template.Rmd", 
                                  package = "lifeR")
 
-  # TODO: output_format shouldn't be hard-coded  
-  output_format <- "html_document"  
+  # Grab report format; couldn't get tryCatch to work
+  report_format <- match.arg(report_format)
+  output_format <- paste0(report_format, "_document")
+  
   rmarkdown::render(input = report_template, 
                     output_format = output_format,
                     output_file = report_filename, # knitr takes care of extension
