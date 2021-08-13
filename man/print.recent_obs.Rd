@@ -12,3 +12,4 @@
 \description{
 Print method for recent_obs object
 }
+\keyword{internal}

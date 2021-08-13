@@ -37,6 +37,15 @@
 #' to build the report. Queries to the eBird API require a user key; more
 #' information on obtaining a key can be found at the eBird API documentation.
 #'
+#' @return Silently returns the results of queries as a list. Each element of 
+#' the list is a two element list with named elements:
+#' \describe{
+#'   \item{results_list}{a list where each element is a list of the results of 
+#'   queries for a center}
+#'   \item{report_details}{a list containing the settings used to build this 
+#'   report, such as days back and distances}
+#' }
+#' 
 #' @examples 
 #' \dontrun{
 #'   # Read in data downloaded from eBird
@@ -252,16 +261,18 @@ SitesReport <- function(centers,
   } # end iteration over each center
   
   # Package the settings of this report to be printed at the end of the report
-  report_details <- list(max_sites = 5,
-                         dist = 50,
-                         back = 4,
-                         hotspot = TRUE,
-                         include_provisional = FALSE,
-                         drop_patterns = c("sp.", "/", "Domestic type", "hybrid"))
+  report_details <- list(max_sites = max_sites,
+                         dist = dist,
+                         back = back,
+                         hotspot = hotspot,
+                         include_provisional = include_provisional,
+                         drop_patterns = drop_patterns)
   
   # Locate the template RMarkdown file
   report_template <- system.file("rmd", "Report-Template.Rmd", 
                                  package = "lifeR")
+  
+  # Create the output_format as expected by rmarkdown::render
   output_format <- paste0(report_format, "_document")
 
   # Use template and pass information about sites and centers for knitting  
@@ -272,4 +283,8 @@ SitesReport <- function(centers,
                     params = list(results_list = results_list,
                                   report_details = report_details),
                     quiet = !verbose)
+  
+  # Silently return the results_list and report_details
+  invisible(x = list(results_list = results_list,
+                     report_details = report_details))
 }

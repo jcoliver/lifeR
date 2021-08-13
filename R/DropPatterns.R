@@ -13,8 +13,10 @@
 #'
 #' @return Copy of \code{data} with any rows that has values in \code{colname}
 #' that match values in \code{patterns}
-#'
+#' 
 #' @export
+#' 
+#' @keywords internal
 DropPatterns <- function(data,
                          patterns = c("sp.", "/", "Domestic type", "hybrid"),
                          colname = "comName"){

@@ -1,6 +1,10 @@
 #' Print method for recent_obs object
 #'
 #' @param obj an object of class "recent_obs"
+#' 
+#' @export
+#' 
+#' @keywords internal
 print.recent_obs <- function(obj) {
   cat("Results of eBird query\n", sep = "")
   for (i in 1:length(obj$query_params)) {

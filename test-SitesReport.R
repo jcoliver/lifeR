@@ -12,7 +12,9 @@ devtools::load_all()
 # locs <- c(32.2394119, -110.9387534)
 # loc_names <- "CenterOne"
 # Three centers, the second one is unlikely to return any results
-locs <- matrix(data = c(45, -109, 39, -111, 38, -122), nrow = 3, byrow = TRUE)
+locs <- matrix(data = c(45.2, -109.1, 39.6, -111.1, 38.1, -121.9), 
+               nrow = 3, 
+               byrow = TRUE)
 loc_names <- c("CenterOne", "CenterTwo", "CenterThree")
 keyfile <- "ebird-key.txt"
 listfile <- "~/Documents/Personal/ebird-targets/data/year-lists/ebird_world_year_2021_list.csv"

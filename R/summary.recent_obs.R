@@ -1,6 +1,10 @@
 #' Summary method for recent_obs object
 #'
 #' @param obj an object of class "recent_obs"
+#' 
+#' @export
+#' 
+#' @keywords internal
 summary.recent_obs <- function(obj) {
   print(obj)
   # regardless, print how many localities

@@ -3,19 +3,21 @@
 #' @param sites data frame with at least the following columns:
 #' \describe{
 #'   \item{locName}{character name of site}
+#'   \item{locId}{eBird identifier for site}
 #'   \item{num_new}{integer number of new species at site}
 #'   \item{lat}{double latitude in decimal degrees}
 #'   \item{lng}{double longitude in decimal degrees}
 #' }
-#'  
+#' 
+#' @return a ggmap object
+#' 
 #' @import ggplot2
 #' @importFrom ggmap get_map ggmap
+#' @export
+#' 
+#' @keywords internal
 MapSites <- function(sites) {
-
-  # values coming in from data frame 'sites':
-  # locName, locId, num_new, lat, lng
-
-  # Add numbers for easier navigating
+  # Add numbers to the site names for easier navigating in map
   sites$locName <- paste0(rownames(sites), ". ", sites$locName)
   
   # Make a shorter version of the location name for map

@@ -10,11 +10,16 @@ MapSites(sites)
 \item{sites}{data frame with at least the following columns:
 \describe{
   \item{locName}{character name of site}
+  \item{locId}{eBird identifier for site}
   \item{num_new}{integer number of new species at site}
   \item{lat}{double latitude in decimal degrees}
   \item{lng}{double longitude in decimal degrees}
 }}
 }
+\value{
+a ggmap object
+}
 \description{
 Create map of sites identified with highest number of missing species
 }
+\keyword{internal}

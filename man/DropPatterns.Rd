@@ -32,3 +32,4 @@ This utility function provides a means of omitting observations of
 "other taxa" such as domestics, hybrids, and "sp." observations. If
 \code{patterns = NULL}, no rows will be dropped.
 }
+\keyword{internal}

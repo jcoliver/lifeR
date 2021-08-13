@@ -12,3 +12,4 @@
 \description{
 Summary method for recent_obs object
 }
+\keyword{internal}

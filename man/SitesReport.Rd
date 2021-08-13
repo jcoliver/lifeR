@@ -72,6 +72,16 @@ exclude certain species from consideration, such as domesticated species,
 hybrids, and observations not identified to species level (e.g.
 "Toxostoma sp.")}
 }
+\value{
+Silently returns the results of queries as a list. Each element of 
+the list is a two element list with named elements:
+\describe{
+  \item{results_list}{a list where each element is a list of the results of 
+  queries for a center}
+  \item{report_details}{a list containing the settings used to build this 
+  report, such as days back and distances}
+}
+}
 \description{
 Create report for sites with most unseen species
 }
