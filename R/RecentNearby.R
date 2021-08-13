@@ -37,7 +37,7 @@
 #'   recent <- RecentNearby(key = key, lat = 32.28, lng = -111.02, dist = 5)
 #' }
 #'
-#' @importFrom curl curl new_handle
+#' @importFrom curl curl new_handle curl_fetch_memory
 #' @importFrom jsonlite fromJSON
 #' @export
 RecentNearby <- function(key,

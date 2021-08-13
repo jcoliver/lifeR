@@ -9,8 +9,20 @@
 #'   \item{lng}{double longitude in decimal degrees}
 #' }
 #' 
+#' @details The function is primarily used by \code{SitesReport} via the 
+#' template RMarkdown file used to build reports. It is not intended for 
+#' standalone use.
+#' 
 #' @return a ggmap object
 #' 
+#' @examples
+#' \dontrun{
+#'   # Create data frame with required columns
+#'   localities <- data.frame(locName = c("Sweetwater Wetlands", "Reid Park"), 
+#'   locID = c("L208918", "L227274"), num_new = c(3, 5), 
+#'   lat = c(32.279, 32.210), lng = c(-111.022, -110.924))
+#'   lifeR:::MapSites(sites = localities)
+#' }
 #' @import ggplot2
 #' @importFrom ggmap get_map ggmap
 #' @export
@@ -27,50 +39,99 @@ MapSites <- function(sites) {
   # Add in the number of missing species
   sites$print_name <- paste0(sites$print_name, " (", sites$num_new, ")")
 
-  # Determine bounds of map; want to think about centers where international 
-  # date line might get involved...
-  # Only need to worry about this when longitudes are really around (and on 
-  # both sides) if International Date Line
-  # Buuuuut, stamen maps (and maybe ggmap) can't handle this right now.
-  # if (any(sites$lng > 90) & any(sites$lng < -90)) {
-  #   # First subtract 360 from any positive longitudes, to make them more 
-  #   # negative
-  #   sites$lng[sites$lng > 0] <- sites$lng[sites$lng > 0] - 360
-  #   # Now find westernmost longitude
-  #   left <- min(sites$lng) + 360
-  #   right <- max(sites$lng)
-  #   sites$lng[sites$lng < -180] <- sites$lng[sites$lng < -180] + 360
-  # } else {
-  #   # Normal math works, no temporary transformation necessary
-  #   left <- min(sites$lng)
-  #   right <- max(sites$lng)
-  # }
+  # Determine bounds of map; ignoring the problem that anti-meridian spanning 
+  # boundary can introduce for now
+
+  # Want to add 10% to map edges to reduce the chance that points lie on map 
+  # edge; start by figuring out what 10% would be
+  lng_span <- max(sites$lng) - min(sites$lng)
+  lng_pad <- abs(lng_span) * 0.1
+  lat_span <- max(sites$lat) - min(sites$lat)
+  lat_pad <- abs(lat_span) * 0.1
   
-  # Round up/down as appropriate to reduce the chance that points lie on map
-  # edges
-  left <- floor(min(sites$lng))
-  right <- ceiling(max(sites$lng))
-  top <- ceiling(max(sites$lat))
-  bottom <- floor(min(sites$lat))
+  # Find point extremes and add padding
+  left <- min(sites$lng) - lng_pad
+  right <- max(sites$lng) + lng_pad
+  top <- max(sites$lat) + lat_pad
+  bottom <- min(sites$lat) - lat_pad
   
   map_bounds <- c(left, bottom, right, top)
+  # Ensure lat/lng are in bounds
+  map_bounds <- CoordInBounds(x = map_bounds,
+                              latitude = c(FALSE, TRUE, FALSE, TRUE))
   
-  # TODO: Need catch to deal with time out of ggmap::get_map?
-  center_map <- ggmap::get_map(location = map_bounds, 
-                               source = "stamen", 
-                               maptype = "terrain")
+  # Want to be sure stamen maps is responsive
+  # First use ggmap::get_map to get URLs of all map tiles, check each of them 
+  # for 200 status, then do query again as long as all the tiles are returning 
+  # status 200
+  map_urls <- ggmap::get_map(location = map_bounds,
+                             source = "stamen",
+                             maptype = "terrain",
+                             urlonly = TRUE)
+  test_tiles <- lapply(X = map_urls, FUN = curl::curl_fetch_memory)
+  # Pull out status_code element from each of the test_tiles sub-lists
+  statuses <- unlist(lapply(test_tiles, "[[", "status_code"))
+  if (all(statuses == 200)) {
+    # All tiles look good, proceed with mapping
+    center_map <- ggmap::get_map(location = map_bounds, 
+                                 source = "stamen", 
+                                 maptype = "terrain")
+    
+    # Need to color by site name (locName), but use print_name for legend
+    sites_map <- ggmap::ggmap(ggmap = center_map) +
+      ggplot2::geom_point(data = sites,
+                          mapping = ggplot2::aes(x = .data$lng, 
+                                                 y = .data$lat, 
+                                                 color = .data$print_name),
+                          size = 3) +
+      ggplot2::scale_color_brewer(name = "Site", palette = "Dark2") +
+      ggplot2::theme_minimal() +
+      ggplot2::xlab(label = "Longitude") +
+      ggplot2::ylab(label = "Latitude")
+    return(sites_map)
+  } else { # One or more tiles wasn't returned
+    # Warn user about problems with map and return NULL
+    warning("The map server did not respond to request, maps may not be drawn.")
+    return(NULL)
+  }
+}
 
-  # Need to color by site name (locName), but use print_name for legend
-  sites_map <- ggmap::ggmap(ggmap = center_map) +
-    ggplot2::geom_point(data = sites,
-               mapping = ggplot2::aes(x = .data$lng, 
-                                      y = .data$lat, 
-                                      color = .data$print_name),
-               size = 3) +
-    ggplot2::scale_color_brewer(name = "Site", palette = "Dark2") +
-    ggplot2::theme_minimal() +
-    ggplot2::xlab(label = "Longitude") +
-    ggplot2::ylab(label = "Latitude")
-
-  return(sites_map)
+#' Determine if coordinate is in bounds, and if not, return closed valid value
+#' 
+#' @param x numeric decimal degree, longitude or latitude
+#' @param direction logical indicating whether \code{x} is latitude or not 
+#' (i.e. is longitude)
+#' 
+#' @details A helper function designed to keep map bounds from using invalid 
+#' coordinates (latitudes outside of -90 and 90; longitudes outside of -180 and 
+#' 180). Will round values to nearest valid value. A more feature-rich approach 
+#' could treat longitudes a little more carefully, where values outside the 
+#' range are updated with the antimeridian in mind. For example, a longitude of 
+#' 182 would become -178. However, drawing polygons that include the 
+#' antimeridian are a nightmare, and since that is what will be done with this 
+#' helper function, it will simply round down to 180.
+#' 
+#' @return a copy of the original numeric vector of decimal degrees, \code{x}, 
+#' with any invalid values (i.e. a latitude > 90) corrected to their closest 
+#' valid value
+#' 
+#' @examples 
+#' \dontrun{
+#'   # Vector of decimal degrees
+#'   vals <- c(78, 93, -112, 184)
+#'   # Vector indicating latitude or longitude
+#'   dirs <- c(TRUE, TRUE, FALSE, FALSE)
+#'   lifeR:::CoordInBounds(x = vals, latitude = dirs)
+#'   # [1] 78   90 -112  180
+#' }
+#' 
+#' @keywords internal
+CoordInBounds <- function(x, latitude) {
+  # Start by fixing any outside of -180 to 180 (which takes care of longitudes)
+  x[x < -180] <- -180
+  x[x > 180] <- 180
+  # Now deal with any remaining latitudes that are out of bounds
+  x[latitude & x < -90] <- -90
+  x[latitude & x > 90] <- 90
+  return(x)
 }
