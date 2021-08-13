@@ -4,10 +4,10 @@
 \alias{print.recent_obs}
 \title{Print method for recent_obs object}
 \usage{
-\method{print}{recent_obs}(obj)
+\method{print}{recent_obs}(x, ...)
 }
 \arguments{
-\item{obj}{an object of class "recent_obs"}
+\item{x}{an object of class "recent_obs"}
 }
 \description{
 Print method for recent_obs object

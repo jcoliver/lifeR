@@ -22,4 +22,18 @@ a ggmap object
 \description{
 Create map of sites identified with highest number of missing species
 }
+\details{
+The function is primarily used by \code{SitesReport} via the 
+template RMarkdown file used to build reports. It is not intended for 
+standalone use.
+}
+\examples{
+\dontrun{
+  # Create data frame with required columns
+  localities <- data.frame(locName = c("Sweetwater Wetlands", "Reid Park"), 
+  locID = c("L208918", "L227274"), num_new = c(3, 5), 
+  lat = c(32.279, 32.210), lng = c(-111.022, -110.924))
+  lifeR:::MapSites(sites = localities)
+}
+}
 \keyword{internal}

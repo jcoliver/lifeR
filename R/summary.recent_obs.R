@@ -1,16 +1,16 @@
 #' Summary method for recent_obs object
 #'
-#' @param obj an object of class "recent_obs"
+#' @param object an object of class "recent_obs"
 #' 
 #' @export
 #' 
 #' @keywords internal
-summary.recent_obs <- function(obj) {
-  print(obj)
+summary.recent_obs <- function(object, ...) {
+  print(object)
   # regardless, print how many localities
   # regardless, print number of observations
-  if (obj$query_type == "nearby observations" & !is.null(obj$obs)) {
+  if (object$query_type == "nearby observations" & !is.null(object$obs)) {
     # if multiple species, print how many species
-    num_species <- length(unique(obj$obs$sciName))
+    num_species <- length(unique(object$obs$sciName))
   }
 }

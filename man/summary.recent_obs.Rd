@@ -4,10 +4,10 @@
 \alias{summary.recent_obs}
 \title{Summary method for recent_obs object}
 \usage{
-\method{summary}{recent_obs}(obj)
+\method{summary}{recent_obs}(object, ...)
 }
 \arguments{
-\item{obj}{an object of class "recent_obs"}
+\item{object}{an object of class "recent_obs"}
 }
 \description{
 Summary method for recent_obs object

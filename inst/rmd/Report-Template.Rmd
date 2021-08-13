@@ -39,7 +39,12 @@ for (i in 1:length(params$results_list)) {
     suppressMessages(
       sites_map <- lifeR:::MapSites(sites = sites)
     )
-    print(sites_map)
+    
+    if (!is.null(sites_map)) {
+      print(sites_map)
+    } else {
+      cat("\n_Map is unavailable, likely due to unresponsive map server._")
+    }
 
     # Make new line after map is printed
     cat("\n\n")
