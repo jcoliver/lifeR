@@ -8,6 +8,8 @@
 #'   \item{lat}{double latitude in decimal degrees}
 #'   \item{lng}{double longitude in decimal degrees}
 #' }
+#' @param center_long
+#' @param center_lat numeric decimal degrees latitude of 
 #' 
 #' @details The function is primarily used by \code{SitesReport} via the 
 #' template RMarkdown file used to build reports. It is not intended for 
@@ -28,7 +30,7 @@
 #' @export
 #' 
 #' @keywords internal
-MapSites <- function(sites) {
+MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
   # Add numbers to the site names for easier navigating in map
   sites$locName <- paste0(rownames(sites), ". ", sites$locName)
   
@@ -41,21 +43,18 @@ MapSites <- function(sites) {
 
   # Determine bounds of map; ignoring the problem that anti-meridian spanning 
   # boundary can introduce for now
+  if (!is.null(center_lng) & !is.null(center_lat)) {
+    map_bounds <- c(floor(min(c(sites$lng, center_lng))),
+                    floor(min(c(sites$lat, center_lat))),
+                    ceiling(max(c(sites$lng, center_lng))),
+                    ceiling(max(c(sites$lat, center_lat))))
+  } else {
+    map_bounds <- c(floor(min(sites$lng)),
+                    floor(min(sites$lat)),
+                    ceiling(max(sites$lng)),
+                    ceiling(max(sites$lat)))
+  }
 
-  # Want to add 10% to map edges to reduce the chance that points lie on map 
-  # edge; start by figuring out what 10% would be
-  lng_span <- max(sites$lng) - min(sites$lng)
-  lng_pad <- abs(lng_span) * 0.1
-  lat_span <- max(sites$lat) - min(sites$lat)
-  lat_pad <- abs(lat_span) * 0.1
-  
-  # Find point extremes and add padding
-  left <- min(sites$lng) - lng_pad
-  right <- max(sites$lng) + lng_pad
-  top <- max(sites$lat) + lat_pad
-  bottom <- min(sites$lat) - lat_pad
-  
-  map_bounds <- c(left, bottom, right, top)
   # Ensure lat/lng are in bounds
   map_bounds <- CoordInBounds(x = map_bounds,
                               latitude = c(FALSE, TRUE, FALSE, TRUE))
@@ -68,6 +67,7 @@ MapSites <- function(sites) {
                              source = "stamen",
                              maptype = "terrain",
                              urlonly = TRUE)
+  # Run curl_fetch_memory on each tile URL
   test_tiles <- lapply(X = map_urls, FUN = curl::curl_fetch_memory)
   # Pull out status_code element from each of the test_tiles sub-lists
   statuses <- unlist(lapply(test_tiles, "[[", "status_code"))

@@ -151,6 +151,10 @@ SitesReport <- function(centers,
   for (i in 1:length(centers_list)) {
     center <- centers_list[[i]]
     
+    if (verbose) {
+      message(paste0("Requesting nearby sightings for ", center$name, "..."))
+    }
+    
     # Do RecentNearby query to find all species recently seen within a radius
     # of dist from the coordinates of the current center
     recent_obs <- RecentNearby(key = ebird_key,

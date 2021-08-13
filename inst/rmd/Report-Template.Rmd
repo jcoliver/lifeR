@@ -35,9 +35,14 @@ for (i in 1:length(params$results_list)) {
       select(locName, locId, num_new, lat, lng) %>%
       distinct(locName, .keep_all = TRUE) %>%
       arrange(desc(num_new))
+    
+# TODO: Debugging
+saveRDS(object = sites, file = paste0("sites-map-", i, ".Rds"))
 
     suppressMessages(
-      sites_map <- lifeR:::MapSites(sites = sites)
+      sites_map <- lifeR:::MapSites(sites = sites, 
+                                    center_lng = center_info$lng, 
+                                    center_lat = center_info$lat)
     )
     
     if (!is.null(sites_map)) {
