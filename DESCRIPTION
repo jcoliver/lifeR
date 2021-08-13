@@ -1,7 +1,7 @@
 Package: lifeR
 Type: Package
 Title: Wrappers and Utilities for Interacting with eBird API
-Version: 0.1.0
+Version: 0.9.1
 Author: Jeffrey C. Oliver
 Maintainer: Jeffrey C. Oliver <jcoliver@arizona.edu>
 Description: More about what it does (maybe more than one line)
