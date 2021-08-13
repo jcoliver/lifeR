@@ -4,7 +4,7 @@
 \alias{MapSites}
 \title{Create map of sites identified with highest number of missing species}
 \usage{
-MapSites(sites)
+MapSites(sites, center_lng = NULL, center_lat = NULL)
 }
 \arguments{
 \item{sites}{data frame with at least the following columns:
@@ -15,6 +15,8 @@ MapSites(sites)
   \item{lat}{double latitude in decimal degrees}
   \item{lng}{double longitude in decimal degrees}
 }}
+
+\item{center_lat}{numeric decimal degrees latitude of}
 }
 \value{
 a ggmap object
