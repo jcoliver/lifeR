@@ -61,7 +61,9 @@ MapSites <- function(sites) {
   # Need to color by site name (locName), but use print_name for legend
   sites_map <- ggmap::ggmap(ggmap = center_map) +
     ggplot2::geom_point(data = sites,
-               mapping = ggplot2::aes(x = lng, y = lat, color = print_name),
+               mapping = ggplot2::aes(x = .data$lng, 
+                                      y = .data$lat, 
+                                      color = .data$print_name),
                size = 3) +
     ggplot2::scale_color_brewer(name = "Site", palette = "Dark2") +
     ggplot2::theme_minimal() +

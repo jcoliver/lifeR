@@ -19,7 +19,7 @@ SitesReport(
   include_provisional = FALSE,
   max_tries = 5,
   timeout_sec = 30,
-  verbose = TRUE,
+  verbose = FALSE,
   drop_patterns = c("sp.", "/", "Domestic type", "hybrid")
 )
 }

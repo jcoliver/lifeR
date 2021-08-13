@@ -13,7 +13,8 @@
 #'
 #' @examples 
 #' # Read in data downloaded from eBird
-#' user_list <- system.file("extdata", "example-list.csv", package = "lifeR")
+#' user_file <- system.file("extdata", "example-list.csv", package = "lifeR")
+#' user_list <- read.csv(file = user_file)
 #' species_seen <- SplitNames(x = user_list$Species)
 #' # If only common names are required
 #' species_seen <- SplitNames(x = user_list$Species)$Common
