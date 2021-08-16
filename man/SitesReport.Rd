@@ -19,7 +19,7 @@ SitesReport(
   include_provisional = FALSE,
   max_tries = 5,
   timeout_sec = 30,
-  verbose = FALSE,
+  messages = c("minimal", "none", "verbose"),
   drop_patterns = c("sp.", "/", "Domestic type", "hybrid")
 )
 }
@@ -64,8 +64,8 @@ expert use)}
 \item{timeout_sec}{integer time to allow before query is aborted (only for
 expert use)}
 
-\item{verbose}{logical determining whether or not to print messages during
-queries}
+\item{messages}{character indicating the degree to which messages are 
+printed during the report assembly process}
 
 \item{drop_patterns}{character vector of patterns in species' names to
 exclude certain species from consideration, such as domesticated species,

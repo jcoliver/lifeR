@@ -26,8 +26,8 @@
 #' expert use)
 #' @param timeout_sec integer time to allow before query is aborted (only for
 #' expert use)
-#' @param verbose logical determining whether or not to print messages during
-#' queries
+#' @param messages character indicating the degree to which messages are 
+#' printed during the report assembly process
 #' @param drop_patterns character vector of patterns in species' names to
 #' exclude certain species from consideration, such as domesticated species,
 #' hybrids, and observations not identified to species level (e.g.
@@ -85,7 +85,7 @@ SitesReport <- function(centers,
                         include_provisional = FALSE,
                         max_tries = 5,
                         timeout_sec = 30,
-                        verbose = FALSE,
+                        messages = c("minimal", "none", "verbose"), 
                         drop_patterns = c("sp.", "/", "Domestic type", "hybrid")) {
 
   # Grab report format; doing this early to ensure proper format is indicated
@@ -120,7 +120,9 @@ SitesReport <- function(centers,
     if (length(center_names) == nrow(centers)) {
       user_supplied_names <- TRUE
     } else {
-      message("Number of center names does not match number of centers passed to SitesReport; names will be auto-generated")
+      if(messages %in% c("minimal", "verbose")) {
+        message("Number of center names does not match number of centers passed to SitesReport; names will be auto-generated")
+      }
     }
   }
   if (!user_supplied_names) {
@@ -151,7 +153,7 @@ SitesReport <- function(centers,
   for (i in 1:length(centers_list)) {
     center <- centers_list[[i]]
     
-    if (verbose) {
+    if (messages %in% c("minimal", "verbose")) {
       message(paste0("Requesting nearby sightings for ", center$name, "..."))
     }
     
@@ -166,12 +168,14 @@ SitesReport <- function(centers,
                                include_provisional = include_provisional,
                                max_tries = max_tries,
                                timeout_sec = timeout_sec,
-                               verbose = verbose)
+                               verbose = (messages == "verbose"))
     
     # See if any observations were returned; if not, let the user know and set
     # results element to NULL
     if (is.null(recent_obs$obs)) {
-      message(paste0("No recent observations near ", center$name, " found."))
+      if (messages %in% c("minimal", "verbose")) {
+        message(paste0("No recent observations near ", center$name, " found."))
+      }
       results_list[[i]] <- list(center_info = center,
                                 results = NULL)
     } else {
@@ -195,10 +199,16 @@ SitesReport <- function(centers,
 
       # Only proceed if there are any unseen species
       if (nrow(species_unseen) < 1) {
-        message(paste0("No unseen species found for center ", center$name))
+        if (messages %in% c("minimal", "verbose")) {
+          message(paste0("No unseen species found for center ", center$name))
+        }
         results_list[[i]] <- list(center_info = center,
                                   results = NULL)
       } else {
+        if (messages %in% c("minimal", "verbose")) {
+          message(paste("Querying eBird for", nrow(species_unseen), "species..."))
+        }
+        
         # List to hold nearby observations of species to be seen; will be indexed 
         # by eBird's species code
         nearby_list <- list()
@@ -216,7 +226,7 @@ SitesReport <- function(centers,
                                                include_provisional = include_provisional,
                                                max_tries = max_tries,
                                                timeout_sec = timeout_sec,
-                                               verbose = verbose)
+                                               verbose = (messages == "verbose"))
           # Extract just the observations data frame from the query, but only if 
           # there were results returned (obs is not NULL)
           if (!is.null(nearby_sp_obs$obs)) {
@@ -232,7 +242,9 @@ SitesReport <- function(centers,
         # Proceed to find top X sites only if at least some sites with unseen 
         # species were found
         if (nrow(all_nearby) < 1) {
-          message(paste0("No sites found for center ", center$name))
+          if (messages %in% c("minimal", "verbose")) {
+            message(paste0("No sites found for center ", center$name))
+          }
           results_list[[i]] <- list(center_info = center,
                                     results = NULL)
         } else {
@@ -286,8 +298,13 @@ SitesReport <- function(centers,
                     output_dir = report_dir,
                     params = list(results_list = results_list,
                                   report_details = report_details),
-                    quiet = !verbose)
-  
+                    quiet = !(messages == "verbose"))
+ 
+  if (messages %in% c("minimal", "verbose")) {
+    message(paste0("Report written to ", report_dir, "/", report_filename, 
+                   ".", report_format))
+  }
+   
   # Silently return the results_list and report_details
   invisible(x = list(results_list = results_list,
                      report_details = report_details))
