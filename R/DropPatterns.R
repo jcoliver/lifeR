@@ -1,18 +1,23 @@
-#' Drops any species with given patterns in name
+#' Drop species with given patterns in name
 #'
-#' @param data a data.frame with observations, likely the object from a call to
-#' \code{RecentNearby}
-#' @param patterns character vector of patterns in \code{colname} column to
-#' omit
-#' @param colname character vector indicating column with names to search for
-#' \code{patterns}
+#' @param data A data.frame with observations, likely the object from a call to
+#' \code{RecentNearby}.
+#' @param patterns Character vector of patterns in \code{colname} column to
+#' omit.
+#' @param colname Character vector indicating column with names to search for
+#' \code{patterns}.
 #'
 #' @details This utility function provides a means of omitting observations of
 #' "other taxa" such as domestics, hybrids, and "sp." observations. If
 #' \code{patterns = NULL}, no rows will be dropped.
 #'
 #' @return Copy of \code{data} with any rows that has values in \code{colname}
-#' that match values in \code{patterns}
+#' that match values in \code{patterns}.
+#' 
+#' @examples
+#' df <- data.frame(comName = c("Mallard", "Mallard x Mexican Duck hybrid", "Verdin"),
+#'                  date = c("2021-01-09", "2021-01-09", "2021-01-09"))
+#' df <- DropPatterns(data = df)
 #' 
 #' @export
 #' 

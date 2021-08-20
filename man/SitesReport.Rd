@@ -24,62 +24,71 @@ SitesReport(
 )
 }
 \arguments{
-\item{centers}{numeric vector or matrix of latitude and longitude
+\item{centers}{Numeric vector or matrix of latitude and longitude
 coordinates; vector should be of length 2, e.g. 
 \code{c(latitude, longitude)}, while matrix should have two columns (first 
-column is latitude, second column is longitude)}
+column is latitude, second column is longitude).}
 
-\item{ebird_key}{character vector with eBird API key}
+\item{ebird_key}{Character vector with eBird API key.}
 
-\item{species_seen}{character vector of species that have already been seen}
+\item{species_seen}{Character vector of species that have already been seen.}
 
-\item{center_names}{optional character vector of names to use for each pair
-of latitude and longitude coordinates in \code{centers}}
+\item{center_names}{Character vector of names to use for each pair of 
+latitude and longitude coordinates in \code{centers}.}
 
-\item{report_filename}{name of output file without file extension (see 
-\code{report_format})}
+\item{report_filename}{Name of output file without file extension (see 
+\code{report_format}); e.g. if \code{report_filename} is "sites-2021" and 
+\code{report_format} is "html", the report will be saved to sites-2021.html.}
 
-\item{report_dir}{destination folder for the output file}
+\item{report_dir}{Destination folder for the output file; if \code{NULL}, 
+report will be saved to working directory.}
 
-\item{report_format}{file format for report; takes one of two values: "html" 
-and "pdf"}
+\item{report_format}{File format for report; takes one of two values: "html" 
+or "pdf".}
 
-\item{max_sites}{integer maximum number of sites to return for each pair of
-coordinates defined in \code{centers}}
+\item{max_sites}{Maximum number of sites to return for each pair of
+coordinates defined in \code{centers}.}
 
-\item{dist}{numeric radius (in kilometers) of area from each point defined
-by coordinates in \code{centers} from which to return recent observations}
+\item{dist}{Numeric radius in kilometers of distance from each geographic 
+center point defined by coordinates in \code{centers} from which to return 
+recent observations.}
 
-\item{back}{integer number of days back to search for observations}
+\item{back}{Number of days back to search for observations.}
 
-\item{hotspot}{logical indicating whether or not to restrict results to
-hotspot locations}
+\item{hotspot}{Logical indicating whether or not to restrict results to
+hotspot locations.}
 
-\item{include_provisional}{logical indicating whether not to include
-observations which have not yet been reviewed}
+\item{include_provisional}{Logical indicating whether not to include
+observations which have not yet been reviewed.}
 
-\item{max_tries}{integer maximum number of query attempts to try (only for
-expert use)}
+\item{max_tries}{Maximum number of query attempts to try (only for
+expert use).}
 
-\item{timeout_sec}{integer time to allow before query is aborted (only for
-expert use)}
+\item{timeout_sec}{Integer time to allow before query is aborted (only for
+expert use).}
 
-\item{messages}{character indicating the degree to which messages are 
-printed during the report assembly process}
+\item{messages}{Character indicating the degree to which messages are 
+printed during the report assembly process. Options are "minimal", "none", 
+or "verbose".}
 
-\item{drop_patterns}{character vector of patterns in species' names to
+\item{drop_patterns}{Character vector of patterns in species' names to
 exclude certain species from consideration, such as domesticated species,
 hybrids, and observations not identified to species level (e.g.
-"Toxostoma sp.")}
+"Toxostoma sp.").}
 }
 \value{
-Silently returns the results of queries as a list. Each element of 
-the list is a two element list with named elements:
+Silently returns a list with two named elements:
 \describe{
-  \item{results_list}{a list where each element is a list of the results of 
-  queries for a center}
-  \item{report_details}{a list containing the settings used to build this 
-  report, such as days back and distances}
+  \item{results_list}{A list where each element is a list of the results of 
+  queries for a center. Each element is a list with two named elements:}
+    \describe{
+      \item{center_info}{A list with latitude (\code{lat}), longitude 
+      (\code{longitude}), and name \code{name} of the geographic center.}
+      \item{results}{A tibble of observations from the top sites (with a 
+      maximum number of sites defined by \code{max_sites}).}
+    }
+  \item{report_details}{A list containing the settings used to build this 
+  report, such as days back and distances.}
 }
 }
 \description{
@@ -87,6 +96,8 @@ Create report for sites with most unseen species
 }
 \details{
 The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59})
-to build the report. Queries to the eBird API require a user key; more
-information on obtaining a key can be found at the eBird API documentation.
+to build the report. Queries to the eBird API require a user key; you can 
+request an eBird API key by logging into your eBird account and navigating 
+to \url{https://ebird.org/api/keygen}. See examples and vignette for using 
+your eBird API key.
 }

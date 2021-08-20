@@ -2,14 +2,14 @@
 % Please edit documentation in R/summary.recent_obs.R
 \name{summary.recent_obs}
 \alias{summary.recent_obs}
-\title{Summary method for recent_obs object}
+\title{Summary of recent_obs object}
 \usage{
 \method{summary}{recent_obs}(object, ...)
 }
 \arguments{
-\item{object}{an object of class "recent_obs"}
+\item{object}{An object of class "recent_obs".}
 }
 \description{
-Summary method for recent_obs object
+Summary of recent_obs object
 }
 \keyword{internal}

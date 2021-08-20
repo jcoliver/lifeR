@@ -1,6 +1,6 @@
-#' Print method for recent_obs object
+#' Print recent_obs object
 #'
-#' @param x an object of class "recent_obs"
+#' @param x An object of class \code{recent_obs}.
 #' 
 #' @export
 #' 

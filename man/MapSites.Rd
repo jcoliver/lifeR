@@ -2,27 +2,28 @@
 % Please edit documentation in R/MapSites.R
 \name{MapSites}
 \alias{MapSites}
-\title{Create map of sites identified with highest number of missing species}
+\title{Map of sites with highest number of missing species}
 \usage{
 MapSites(sites, center_lng = NULL, center_lat = NULL)
 }
 \arguments{
-\item{sites}{data frame with at least the following columns:
+\item{sites}{A data.frame with at least the following columns:
 \describe{
-  \item{locName}{character name of site}
-  \item{locId}{eBird identifier for site}
-  \item{num_new}{integer number of new species at site}
-  \item{lat}{double latitude in decimal degrees}
-  \item{lng}{double longitude in decimal degrees}
+  \item{locName}{Name of the location.}
+  \item{locId}{eBird identifier of the location.}
+  \item{num_new}{Number of new species at site}
+  \item{lat}{Numeric latitude in decimal degrees}
+  \item{lng}{Numeric longitude in decimal degrees}
 }}
 
-\item{center_lat}{numeric decimal degrees latitude of}
+\item{center_lng, }{center_lat Numeric decimal degrees longitude and latitude 
+of the geographic center used for searching sites.}
 }
 \value{
-a ggmap object
+A ggmap object.
 }
 \description{
-Create map of sites identified with highest number of missing species
+Map of sites with highest number of missing species
 }
 \details{
 The function is primarily used by \code{SitesReport} via the 
@@ -37,5 +38,6 @@ standalone use.
   lat = c(32.279, 32.210), lng = c(-111.022, -110.924))
   lifeR:::MapSites(sites = localities)
 }
+
 }
 \keyword{internal}

@@ -2,14 +2,14 @@
 % Please edit documentation in R/print.recent_obs.R
 \name{print.recent_obs}
 \alias{print.recent_obs}
-\title{Print method for recent_obs object}
+\title{Print recent_obs object}
 \usage{
 \method{print}{recent_obs}(x, ...)
 }
 \arguments{
-\item{x}{an object of class "recent_obs"}
+\item{x}{An object of class \code{recent_obs}.}
 }
 \description{
-Print method for recent_obs object
+Print recent_obs object
 }
 \keyword{internal}
