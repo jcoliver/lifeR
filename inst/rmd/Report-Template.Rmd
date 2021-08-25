@@ -59,7 +59,7 @@ saveRDS(object = sites, file = paste0("sites-map-", i, ".Rds"))
       site_id <- sites$locId[s]
       site_new <- sites$num_new[s]
       site_lat <- sites$lat[s]
-      site_lng <- sites$lat[s]
+      site_lng <- sites$lng[s]
       
       # Pull out only columns of interest, renaming as appropriate
       site_results <- center_results %>%
