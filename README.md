@@ -17,11 +17,27 @@ install.packages("remotes")
 remotes::install_github(repo = "jcoliver/lifeR")
 ```
 
+If you want to have the introductory vignette included in the installation, 
+then pass `build_vignettes = TRUE` in the call to `install_github()`:
+
+```r
+install.packages("remotes")
+remotes::install_github(repo = "jcoliver/lifeR", build_vignettes = TRUE)
+```
+
 And load the package with `library`
 
 ```r
 library("lifeR")
 ```
+
+<!--
+To open the vignette, run
+
+```r
+browseVignettes(package = "lifeR")
+```
+-->
 
 ## Miscellaneous debris
 

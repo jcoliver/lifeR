@@ -101,3 +101,25 @@ request an eBird API key by logging into your eBird account and navigating
 to \url{https://ebird.org/api/keygen}. See examples and vignette for using 
 your eBird API key.
 }
+\examples{
+\dontrun{
+  # Read in data downloaded from eBird
+  list_file <- system.file("extdata", "example-list.csv", package = "lifeR")
+  user_list <- read.csv(file = list_file)
+  # Only common names are required
+  my_species <- SplitNames(x = user_list$Species)$Common
+  # Read in eBird API key from a text file
+  key <- scan(file = "ebird-key.txt", what = "character")
+
+  # A single center requires vector of coordinates
+  locs <- c(45, -109)
+  SitesReport(centers = locs, ebird_key = key, 
+  species_seen = my_species)
+  
+  # For multiple centers, pass a matrix to centers argument
+  loc_mat <- matrix(data = c(33, -109, 39, -119.1), nrow = 2, byrow = TRUE)
+  loc_names <- c("Brushy Mountain", "Yerington")
+  SitesReport(centers = loc_mat, ebird_key = key, 
+  species_seen = my_species, center_names = loc_names)
+}
+}

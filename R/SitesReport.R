@@ -74,7 +74,7 @@
 #'   
 #'   # For multiple centers, pass a matrix to centers argument
 #'   loc_mat <- matrix(data = c(33, -109, 39, -119.1), nrow = 2, byrow = TRUE)
-#'   loc_names <- c("Brushy Mountain", "Yerington)
+#'   loc_names <- c("Brushy Mountain", "Yerington")
 #'   SitesReport(centers = loc_mat, ebird_key = key, 
 #'   species_seen = my_species, center_names = loc_names)
 #' }

@@ -1,0 +1,108 @@
+---
+title: "Introduction to lifeR"
+author: "Jeffrey C. Oliver"
+date: "24 August, 2021"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to lifeR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(lifeR)
+```
+
+# Summary
+
+What does this package do?
+
+# Installation
+
+Currently, you will need to install the package from GitHub; you can do this 
+with help from the remotes package:
+
+```{r install, eval = FALSE}
+install.packages("remotes")
+remotes::install_github(repo = "jcoliver/lifeR")
+```
+
+If you want to have the introductory vignette included in the installation, 
+then pass `build_vignettes = TRUE` in the call to `install_github()`:
+
+```{r install-vignette, eval = FALSE}
+remotes::install_github(repo = "jcoliver/lifeR", build_vignettes = TRUE)
+```
+
+# Using lifeR
+
+## Requirements
+
+You will need a minimum of three pieces of information to use lifeR:
+
+1. An eBird API key
+2. A list of species you have seen (life list, year list, etc.)
+3. A pair of latitude and longitude coordinates to center the search for 
+potential locations.
+
+### 1. eBird API key
+
+Because lifeR relies on the public eBird API, you will need to have your own 
+unique API key to use this package. To get your key, visit [https://ebird.org/api/keygen](https://ebird.org/api/keygen) to get a eBird 
+API key (note you will be prompted to log into your eBird account). The key 
+will be a random string of letters and numbers. I suggest you copy the key and 
+save it to a plain text file on your computer; you can use a program like 
+Notepad or TextEdit to create plain text files. Save this file somewhere you 
+will remember (like "My Documents") and name it something that is recognizable 
+(e.g. "ebird-api-key.txt"). We will use this file later to access the eBird 
+API.
+
+### 2. Your species list
+
+This should be a list of the species you have already seen, but it can vary 
+based on the list you would like to add species to. If you want to find sites 
+where birds you have never seen have been observed recently, you would use your 
+life list. If you are working on a Big Year, you would use your year list. 
+Trying to break 200 species for your Santa Cruz, Arizona county list? Then yes, 
+use your Santa Cruz, Arizona species list. These can all be downloaded from 
+your eBird account by going to 
+[https://ebird.org/lifelist/](https://ebird.org/lifelist/), using the dropdown 
+menus near the top of the page to select the region and time range of your 
+list, then downloading the list through the "Download (csv)" link near the 
+upper-right corner of the page. Save the file somewhere where you will remember 
+where it is.
+
+### 3. Latitude and longitude
+
+Finally, lifeR is designed to identify sites in a region for you to visit. 
+Therefore, you will need to provide information on _where_ that region is. The 
+package uses a latitude and longitude coordinate to serve as the "center" of 
+the region of interest, and find sites within a certain radius of that center. 
+The maximum radius is 50 kilometers - if you want to search a larger area, you 
+will just need to define two centers (information on doing this is provided 
+below). If you do not know the latitude and longitude of your "center" I 
+recommend Google Maps, which allows you to right- or control-click on a 
+location on a map, and the latitude and longitude coordinates will be 
+displayed. Note lifeR requires decimal degree formatted data (e.g. -110.92, 
+_not_ 110° 55' 12").
+
+## Create the report
+
+### Helpful tips
+
++ Won't see everything
++ The longer your list, the fewer sites
+
+## How does it work?
+
+## What doesn't the package do?
+
++ Connect to your eBird account
++ Include additional measures of confidence, due to data returned by eBird
