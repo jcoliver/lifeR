@@ -39,6 +39,29 @@ browseVignettes(package = "lifeR")
 ```
 -->
 
+# A minimalist example
+
+```r
+# Location of the file with your year list
+list_file <- "~/Desktop/ebird_world_year_2021_list.csv"
+
+# Read the list of species into memory
+user_list <- read.csv(file = list_file)
+
+# Extract the common names of species from your list
+my_species <- SplitNames(x = user_list$Species)$Common
+
+# Read in eBird API key from a text file; replace the argument to file with 
+# the actual location of your eBird key file
+key <- scan(file = "ebird-api-key.txt", what = "character")
+
+# A single center requires vector of coordinates
+locs <- c(45, -116)
+SitesReport(centers = locs, 
+            ebird_key = key, 
+            species_seen = my_species)
+```
+
 ## Miscellaneous debris
 
 + For early development of this project, also see [https://github.com/jcoliver/ebird-targets](https://github.com/jcoliver/ebird-targets).
