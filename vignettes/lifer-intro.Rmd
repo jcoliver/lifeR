@@ -16,13 +16,19 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, echo = FALSE}
 library(lifeR)
 ```
 
 # Summary
 
-What does this package do?
+lifeR is an R package for identifying locations to visit in order to increase 
+your bird species list count. The package relies on the 
+[eBird API](https://documenter.getpostman.com/view/664302/S1ENwy59) to query 
+for recent observations and compare them to a user's species list. The lists 
+can be life lists, year lists, etc. The primary output is a report of sites to 
+visit in a region where species _not_ on the user's list have been reported 
+recently.
 
 # Installation
 
@@ -109,6 +115,7 @@ returned from eBird, and
 lists, and building the report
 
 ```{r example-1, eval = FALSE}
+library(lifeR)
 # To use the sample list included in this package
 list_file <- system.file("extdata", "example-list.csv", package = "lifeR")
 
@@ -189,7 +196,7 @@ SitesReport(centers = loc_df,
 + This should go without saying, but you are very unlikely to see _all_ of the 
 species that have been identified as being recently observed at a given sight. 
 There might be recent observations that result in a 
-[Least Bittern](https://ebird.org/species/leabit) showing up in the output 
+[Northern Goshawk](https://ebird.org/species/norgos) showing up in the output 
 report, but lifeR makes no guarantees that you will actually see that 
 godforsaken bird.
 + Along similar lines, this report makes no claims on the veracity of 
@@ -201,7 +208,8 @@ preening its pale neck feathers amongst an unkindness of Common Ravens.
 + The longer the list you use (e.g. your life list, your year list, etc), the 
 fewer sites/species will be identified in the report. If you find you are 
 running `SitesReport` and few or no sites are being returned, try:
-  + A more restrictive list (i.e. use your year list instead of your life list)
+  + A shorter, more restrictive list (e.g. use your year list instead of your 
+  life list)
   + A larger radius to search (up to a maximum of 50km)
   + Additional centers to start your search from (i.e. one that is 100km from 
   your home base)

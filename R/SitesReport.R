@@ -101,6 +101,7 @@ SitesReport <- function(centers,
 
   # Grab report format; doing this early to ensure proper format is indicated
   report_format <- match.arg(report_format)
+  messages <- match.arg(messages)
   
   # the centers object will need to ultimately be a list, but start by making 
   # sure it is a matrix, doing transformation of data frame or vector as 
@@ -243,7 +244,7 @@ SitesReport <- function(centers,
           if (!is.null(nearby_sp_obs$obs)) {
             nearby_list[[species_code]] <- nearby_sp_obs$obs
           }
-          Sys.sleep(time = 0.25) # So we're not hammering on eBird's server
+          Sys.sleep(time = 0.1) # So we're not hammering on eBird's server
           
         } # end iteration over all unseen species
         
@@ -271,7 +272,7 @@ SitesReport <- function(centers,
           # grab the data from those sites identified in top_sites
           top_nearby <- all_nearby %>%
             filter(.data$locId %in% top_site_counts$locId) %>%
-            select(-.data$obsValid, -.data$obsReviewed, -.data$locationPrivate, -.data$subId)
+            select(-.data$obsValid, -.data$obsReviewed, -.data$locationPrivate)
           
           # Create the results_list element at the appropriate index (i). It will be 
           # a 2-element list, with the original center information (lat, lng, name) 

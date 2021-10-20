@@ -27,8 +27,8 @@ for (i in 1:length(params$results_list)) {
   } else {
     cat("#", center_info$name[1], "Top Sites\n\n")
     
-    # See how many new species at each site, retaining lat & lng for printing map
-    # had to get creative to get lat & long through (hence no summarize)
+    # See how many new species at each site, retaining lat & lng for printing 
+    # map had to get creative to get lat & long through (hence no summarize)
     sites <- center_results %>%
       group_by(locName) %>%
       mutate(num_new = n()) %>%
@@ -36,9 +36,6 @@ for (i in 1:length(params$results_list)) {
       distinct(locName, .keep_all = TRUE) %>%
       arrange(desc(num_new))
     
-# TODO: Debugging
-saveRDS(object = sites, file = paste0("sites-map-", i, ".Rds"))
-
     suppressMessages(
       sites_map <- lifeR:::MapSites(sites = sites, 
                                     center_lng = center_info$lng, 
@@ -64,13 +61,17 @@ saveRDS(object = sites, file = paste0("sites-map-", i, ".Rds"))
       # Pull out only columns of interest, renaming as appropriate
       site_results <- center_results %>%
         filter(locName == site_name) %>%
-        select(comName, howMany, obsDt) %>%
+        select(comName, howMany, obsDt, subId) %>%
         mutate(`Last Seen` = as.Date(obsDt)) %>%
         select(-obsDt) %>%
         rename(Species = comName,
                Count = howMany) %>%
-        arrange(desc(`Last Seen`))
+        arrange(desc(`Last Seen`)) %>%
+        # Update date shown in Last Seen to be linked to corresponding checklist
+        mutate(`Last Seen` = paste0("[", `Last Seen`, "](https://ebird.org/checklist/", subId, ")")) %>%
+        select(-subId)
       
+
       # Create the Google Map URL from coordinates
       google_maps_url <- paste0("http://maps.google.com/maps?q=",
                                 site_lat, ",", site_lng)
