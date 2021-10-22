@@ -20,8 +20,8 @@
 #' @examples
 #' \dontrun{
 #'   # Create data frame with required columns
-#'   localities <- data.frame(locName = c("Sweetwater Wetlands", "Reid Park"), 
-#'   locID = c("L208918", "L227274"), num_new = c(3, 5), 
+#'   localities <- data.frame(locName = c("Sweetwater Wetlands", "Reid Park"),
+#'   locID = c("L208918", "L227274"), num_new = c(3, 5),
 #'   lat = c(32.279, 32.210), lng = c(-111.022, -110.924))
 #'   lifeR:::MapSites(sites = localities)
 #' }
@@ -44,16 +44,44 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
 
   # Determine bounds of map; ignoring the problem that anti-meridian spanning 
   # boundary can introduce for now
+
+  # Want to ensure (1) points are not right on map border and (2) maps are at 
+  # least as wide as they are tall. For (1), start by adding 5% to each side; 
+  # for (2), measure top - bottom span and left - right span. If the latter is 
+  # smaller than the former add half the former to each side of the latter.
+  
+  # Start by getting minimum bounds for points to be plotted
   if (!is.null(center_lng) & !is.null(center_lat)) {
-    map_bounds <- c(floor(min(c(sites$lng, center_lng))),
-                    floor(min(c(sites$lat, center_lat))),
-                    ceiling(max(c(sites$lng, center_lng))),
-                    ceiling(max(c(sites$lat, center_lat))))
+    map_bounds <- c("left" = min(c(sites$lng, center_lng)),
+                    "bottom" = min(c(sites$lat, center_lat)),
+                    "right" = max(c(sites$lng, center_lng)),
+                    "top" = max(c(sites$lat, center_lat)))
   } else {
-    map_bounds <- c(floor(min(sites$lng)),
-                    floor(min(sites$lat)),
-                    ceiling(max(sites$lng)),
-                    ceiling(max(sites$lat)))
+    map_bounds <- c("left" = min(sites$lng),
+                    "bottom" = min(sites$lat),
+                    "right" = max(sites$lng),
+                    "top" = max(sites$lat))
+  }
+
+  # Find original spans of map and calculate 5% for padding
+  lng_pad <- (map_bounds["right"] - map_bounds["left"]) * 0.05
+  lat_pad <- (map_bounds["top"] - map_bounds["bottom"]) * 0.05
+  
+  # Update map_bounds with this 5% padding
+  map_bounds["left"] <- map_bounds["left"] - lng_pad
+  map_bounds["right"] <- map_bounds["right"] + lng_pad
+  map_bounds["bottom"] <- map_bounds["bottom"] - lat_pad
+  map_bounds["top"] <- map_bounds["top"] + lat_pad
+  
+  # Now check the spans to see if map needs to be wider
+  lng_span <- map_bounds["right"] - map_bounds["left"]
+  lat_span <- map_bounds["top"] - map_bounds["bottom"]
+  
+  # If taller than wide, add enough longitude to make it square
+  if (lat_span > lng_span) {
+    lng_pad <- (lat_span - lng_span) / 2
+    map_bounds["left"] <- map_bounds["left"] - lng_pad
+    map_bounds["right"] <- map_bounds["right"] + lng_pad
   }
 
   # Ensure lat/lng are in bounds
@@ -83,12 +111,32 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
       ggplot2::geom_point(data = sites,
                           mapping = ggplot2::aes(x = .data$lng, 
                                                  y = .data$lat, 
-                                                 color = .data$print_name),
-                          size = 3) +
-      ggplot2::scale_color_brewer(name = "Site", palette = "Dark2") +
+                                                 fill = .data$print_name),
+                          size = 3,
+                          color = "white",
+                          shape = 21) +
+      ggplot2::scale_fill_brewer(name = "Site", palette = "Dark2") +
       ggplot2::theme_minimal() +
       ggplot2::xlab(label = "Longitude") +
       ggplot2::ylab(label = "Latitude")
+    
+    # If the coordinates for the center are not NULL, add them as a point
+    if (!is.null(center_lat) & !is.null(center_lng)) {
+      center_df <- data.frame(lng = center_lng, lat = center_lat)
+      sites_map <- sites_map +
+        ggplot2::geom_point(data = center_df,
+                            mapping = ggplot2::aes(x = .data$lng, 
+                                                   y = .data$lat),
+                            size = 4,
+                            shape = 16, # circled colored white
+                            color = "white") +
+        ggplot2::geom_point(data = center_df,
+                            mapping = ggplot2::aes(x = .data$lng, 
+                                                   y = .data$lat),
+                            size = 4,
+                            shape = 10, # black circle outline with center plus
+                            color = "black")
+    }
     return(sites_map)
   } else { # One or more tiles wasn't returned
     # Warn user about problems with map and return NULL
