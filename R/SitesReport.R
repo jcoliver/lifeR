@@ -16,7 +16,7 @@
 #' @param report_format File format for report; takes one of two values: "html" 
 #' or "pdf".
 #' @param max_sites Maximum number of sites to return for each pair of
-#' coordinates defined in \code{centers}.
+#' coordinates defined in \code{centers}; maximum is 12.
 #' @param dist Numeric radius in kilometers of distance from each geographic 
 #' center point defined by coordinates in \code{centers} from which to return 
 #' recent observations.
@@ -124,6 +124,18 @@ SitesReport <- function(centers,
     stop("SitesReport requires numeric centers data (decimal longitude & latitude)")
   }
 
+  # Set a ceiling on the maximum number of sites; otherwise map is 
+  # incomprehensible
+  if (!is.numeric(max_sites)) {
+    max_sites <- 5
+  }
+  if (max_sites > 12) {
+    max_sites <- 12
+    if(messages %in% c("minimal", "verbose")) {
+      message("Maximum number of sites per center is 12.")
+    }
+  }
+  
   # Add in center names if user passed those along; need to make sure they are 
   # the right length. If not, message user and proceed as if user had not 
   # provided names

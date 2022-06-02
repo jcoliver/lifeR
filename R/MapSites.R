@@ -39,9 +39,14 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
   sites$print_name <- substr(x = sites$locName,
                              start = 1, 
                              stop = 16)
-  # Add in the number of missing species
+  # Add in the number of new species
   sites$print_name <- paste0(sites$print_name, " (", sites$num_new, ")")
-
+  
+  # Convert print_name to a factor and level it here for proper ordering of 
+  # sites (only really necessary when number of sites is >= 10)
+  sites$print_name <- factor(x = sites$print_name,
+                             levels = sites$print_name)
+  
   # Determine bounds of map; ignoring the problem that anti-meridian spanning 
   # boundary can introduce for now
 
@@ -106,16 +111,16 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
                                  source = "stamen", 
                                  maptype = "terrain")
     
-    # Need to color by site name (locName), but use print_name for legend
+    # Need to color by site name, using print_name for legend
     sites_map <- ggmap::ggmap(ggmap = center_map) +
       ggplot2::geom_point(data = sites,
                           mapping = ggplot2::aes(x = .data$lng, 
                                                  y = .data$lat, 
                                                  fill = .data$print_name),
                           size = 3,
-                          color = "white",
+                          color = "black",
                           shape = 21) +
-      ggplot2::scale_fill_brewer(name = "Site", palette = "Dark2") +
+      ggplot2::scale_fill_brewer(name = "Site", palette = "Paired") +
       ggplot2::theme_minimal() +
       ggplot2::xlab(label = "Longitude") +
       ggplot2::ylab(label = "Latitude")

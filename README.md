@@ -56,6 +56,7 @@ my_species <- SplitNames(x = user_list$Species)$Common
 key <- scan(file = "ebird-api-key.txt", what = "character")
 
 # A single center requires vector of coordinates
+# Change these, unless you really want to go birding near McCall, Idaho
 locs <- c(45, -116)
 SitesReport(centers = locs, 
             ebird_key = key, 

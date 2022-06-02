@@ -1,7 +1,7 @@
 ---
 title: "Introduction to lifeR"
 author: "Jeffrey C. Oliver"
-date: "3 August, 2021"
+date: "1 June, 2022"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to lifeR}
@@ -134,6 +134,7 @@ my_species <- SplitNames(x = user_list$Species)$Common
 key <- scan(file = "ebird-api-key.txt", what = "character")
 
 # A single center requires vector of coordinates
+# Change these, unless you really want to go birding near McCall, Idaho
 locs <- c(45, -116)
 SitesReport(centers = locs, 
             ebird_key = key, 
@@ -194,7 +195,7 @@ SitesReport(centers = loc_df,
 ### Helpful tips
 
 + This should go without saying, but you are very unlikely to see _all_ of the 
-species that have been identified as being recently observed at a given sight. 
+species that have been identified as being recently observed at a given site. 
 There might be recent observations that result in a 
 [Northern Goshawk](https://ebird.org/species/norgos) showing up in the output 
 report, but lifeR makes no guarantees that you will actually see that 
@@ -239,10 +240,11 @@ retrieve _all_ the sites at which that species was recently seen.
 
 ## What doesn't the package do?
 
-+ **Connect to your eBird account**. The eBird API is designed to query publicly 
-available data about observations. It does not provide a way to query about 
-individual users' accounts. It is for this reason that you are responsible for 
-downloading your species list and feeding it to `SitesReport()`.
++ **Connect to your eBird account**. The eBird API is designed to query 
+publicly available data about observations. It does not provide a way to query 
+about individual users' accounts. It is for this reason that you are 
+responsible for downloading your species list and feeding it to 
+`SitesReport()`.
 + **Include additional measures of confidence**. It would be nice if lifeR 
 could include some estimate of the likelihood of seeing each species based on 
 how many people have seen it or the average number of individuals observed. It 
