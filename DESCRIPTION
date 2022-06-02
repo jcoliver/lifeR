@@ -1,7 +1,7 @@
 Package: lifeR
 Type: Package
 Title: Identify sites to visit to add to your bird list
-Version: 0.9.3
+Version: 0.9.5
 Author: Jeffrey C. Oliver
 Maintainer: Jeffrey C. Oliver <jcoliver@arizona.edu>
 Description: lifeR uses eBird data and APIs to compare users' species lists to 
