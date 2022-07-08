@@ -25,3 +25,4 @@ RoxygenNote: 7.1.1
 Suggests: 
     testthat
 VignetteBuilder: knitr
+URL: https://jcoliver.github.io/lifeR/, https://github.com/jcoliver/lifeR
