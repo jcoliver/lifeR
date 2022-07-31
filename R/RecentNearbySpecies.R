@@ -38,7 +38,7 @@
 #'       \item{speciesCode}{The (usually) six-letter species code, see 
 #'       \url{https://ebird.org/science/the-ebird-taxonomy}}
 #'       \item{comName}{Species' common name.}
-#'       \item{sciName}{Speices' scientific name.}
+#'       \item{sciName}{Species' scientific name.}
 #'       \item{locId}{eBird identifier of the location.}
 #'       \item{locName}{Name of the location.}
 #'       \item{obsDt}{Observation date as character string in the format 
@@ -111,7 +111,7 @@ RecentNearbySpecies <- function(key,
 
     tries <- tries + 1
   }
-  if (class(observations) != "data.frame"){
+  if (!inherits(x = observations, what = "data.frame")){
     message(paste0("Failed request for ", species_code, " after ", tries, " tries."))
     observations <- NULL
   }

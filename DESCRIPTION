@@ -1,6 +1,6 @@
 Package: lifeR
 Type: Package
-Title: Identify sites to visit to add to your bird list
+Title: Identify sites for your bird list
 Version: 0.9.5
 Author: Jeffrey C. Oliver
 Maintainer: Jeffrey C. Oliver <jcoliver@arizona.edu>
@@ -21,7 +21,7 @@ Imports:
     stringr (>= 1.4.0),
     ggplot2 (>= 3.3.3),
     ggmap (>= 3.0.0)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.0
 Suggests: 
     testthat
 VignetteBuilder: knitr

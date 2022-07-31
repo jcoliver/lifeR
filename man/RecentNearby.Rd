@@ -56,7 +56,7 @@ An object of class "recent_obs" with the following elements:
       \item{speciesCode}{The (usually) six-letter species code, see 
       \url{https://ebird.org/science/the-ebird-taxonomy}}
       \item{comName}{Species' common name.}
-      \item{sciName}{Speices' scientific name.}
+      \item{sciName}{Species' scientific name.}
       \item{locId}{eBird identifier of the location.}
       \item{locName}{Name of the location.}
       \item{obsDt}{Observation date as character string in the format 

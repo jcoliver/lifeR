@@ -47,7 +47,7 @@ report will be saved to working directory.}
 or "pdf".}
 
 \item{max_sites}{Maximum number of sites to return for each pair of
-coordinates defined in \code{centers}.}
+coordinates defined in \code{centers}; maximum is 12.}
 
 \item{dist}{Numeric radius in kilometers of distance from each geographic 
 center point defined by coordinates in \code{centers} from which to return 
