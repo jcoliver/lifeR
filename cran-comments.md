@@ -1,3 +1,18 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Converted the DESCRIPTION title to title case.
+
+* Revised DESCRIPTION description to not start with package name
+
+* Included only CRAN BSD 2-clause LICENSE template
+
+* Updated URLs that were redirects
+
+* Consistently use https instead of http
+
+* Consistently use trailing slashes in URLs
+
 # R CMD check results
 
 There were no ERRORs or WARNINGs.
