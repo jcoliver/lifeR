@@ -37,10 +37,10 @@
 #' hybrids, and observations not identified to species level (e.g.
 #' "Toxostoma sp.").
 #'
-#' @details The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59})
+#' @details The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59/})
 #' to build the report. Queries to the eBird API require a user key; you can 
 #' request an eBird API key by logging into your eBird account and navigating 
-#' to \url{https://ebird.org/api/keygen}. See examples and vignette for using 
+#' to \url{https://ebird.org/api/keygen/}. See examples and vignette for using 
 #' your eBird API key.
 #'
 #' @return Silently returns a list with two named elements:

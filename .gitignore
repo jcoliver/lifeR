@@ -1,6 +1,9 @@
 # ebird key
 ebird-key.txt
 
+# CRAN submission files
+CRAN-SUBMISSION
+
 # History files
 .Rhistory
 .Rapp.history

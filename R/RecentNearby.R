@@ -18,7 +18,7 @@
 #' @param verbose Logical determining whether or not to print messages during
 #' queries.
 #'
-#' @details The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59})
+#' @details The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59/})
 #' to query recent sightings. Queries to the eBird API require a user key; more
 #' information on obtaining a key can be found at the eBird API documentation.
 #'
@@ -30,7 +30,7 @@
 #'   observations are returned, \code{obs} is \code{NULL}}. Columns include:
 #'     \describe{
 #'       \item{speciesCode}{The (usually) six-letter species code, see 
-#'       \url{https://ebird.org/science/the-ebird-taxonomy}}
+#'       \url{https://science.ebird.org/en/use-ebird-data/the-ebird-taxonomy/}}
 #'       \item{comName}{Species' common name.}
 #'       \item{sciName}{Species' scientific name.}
 #'       \item{locId}{eBird identifier of the location.}

@@ -73,7 +73,7 @@ for (i in 1:length(params$results_list)) {
       
 
       # Create the Google Map URL from coordinates
-      google_maps_url <- paste0("http://maps.google.com/maps?q=",
+      google_maps_url <- paste0("https://maps.google.com/maps?q=",
                                 site_lat, ",", site_lng)
 
       # Create the eBird URL from locId (need to test for non-hotspot 

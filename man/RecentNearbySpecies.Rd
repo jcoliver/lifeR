@@ -23,7 +23,8 @@ RecentNearbySpecies(
 
 \item{species_code}{Species code for species of interest; usually a
 six-character string such as "purmar" or "batpig". See
-\url{https://ebird.org/science/the-ebird-taxonomy} for more information.}
+\url{https://science.ebird.org/en/use-ebird-data/the-ebird-taxonomy/} for 
+more information.}
 
 \item{lat}{Numeric decimal degree latitude; use negative values for southern 
 latitudes (i.e. -46.86, \emph{not} "46.86 S").}
@@ -60,7 +61,7 @@ An object of class "recent_obs" with the following elements:
   observations are returned, \code{obs} is \code{NULL}. Columns include:}
     \describe{
       \item{speciesCode}{The (usually) six-letter species code, see 
-      \url{https://ebird.org/science/the-ebird-taxonomy}}
+      \url{https://science.ebird.org/en/use-ebird-data/the-ebird-taxonomy/}}
       \item{comName}{Species' common name.}
       \item{sciName}{Species' scientific name.}
       \item{locId}{eBird identifier of the location.}
@@ -82,10 +83,10 @@ An object of class "recent_obs" with the following elements:
 Retrieve recent nearby observations of a species
 }
 \details{
-The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59})
+The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59/})
 to query recent sightings of a species. Queries to the eBird API require a 
 user key; you can request an eBird API key by logging into your eBird 
-account and navigating to \url{https://ebird.org/api/keygen}. See examples 
+account and navigating to \url{https://ebird.org/api/keygen/}. See examples 
 and vignette for using your eBird API key.
 }
 \examples{

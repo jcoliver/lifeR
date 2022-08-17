@@ -1,12 +1,13 @@
 Package: lifeR
 Type: Package
-Title: Identify sites for your bird list
+Title: Identify Sites for Your Bird List
 Version: 0.9.5
 Author: Jeffrey C. Oliver
 Maintainer: Jeffrey C. Oliver <jcoliver@arizona.edu>
-Description: lifeR uses eBird data and APIs to compare users' species lists to 
-    recent observations recorded in the eBird database (<https://ebird.org>) 
-    and creates a report of the top sites to visit to see new species.
+Description: A suite of tools to use the eBird database 
+    (<https://ebird.org/home/>) and APIs to compare users' species lists to 
+    recent observations and create a report of the top sites to visit to see 
+    new species.
 License: BSD_2_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -25,4 +26,4 @@ RoxygenNote: 7.2.0
 Suggests: 
     testthat
 VignetteBuilder: knitr
-URL: https://jcoliver.github.io/lifeR/, https://github.com/jcoliver/lifeR
+URL: https://jcoliver.github.io/lifeR/, https://github.com/jcoliver/lifeR/

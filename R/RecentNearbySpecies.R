@@ -3,7 +3,8 @@
 #' @param key Character eBird API key.
 #' @param species_code Species code for species of interest; usually a
 #' six-character string such as "purmar" or "batpig". See
-#' \url{https://ebird.org/science/the-ebird-taxonomy} for more information.
+#' \url{https://science.ebird.org/en/use-ebird-data/the-ebird-taxonomy/} for 
+#' more information.
 #' @param lat Numeric decimal degree latitude; use negative values for southern 
 #' latitudes (i.e. -46.86, \emph{not} "46.86 S").
 #' @param lng Numeric decimal degree longitude; use negative values for western
@@ -21,10 +22,10 @@
 #' @param verbose Logical determining whether or not to print messages during
 #' queries.
 #'
-#' @details The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59})
+#' @details The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59/})
 #' to query recent sightings of a species. Queries to the eBird API require a 
 #' user key; you can request an eBird API key by logging into your eBird 
-#' account and navigating to \url{https://ebird.org/api/keygen}. See examples 
+#' account and navigating to \url{https://ebird.org/api/keygen/}. See examples 
 #' and vignette for using your eBird API key.
 #'
 #' @return An object of class "recent_obs" with the following elements:
@@ -36,7 +37,7 @@
 #'   observations are returned, \code{obs} is \code{NULL}. Columns include:}
 #'     \describe{
 #'       \item{speciesCode}{The (usually) six-letter species code, see 
-#'       \url{https://ebird.org/science/the-ebird-taxonomy}}
+#'       \url{https://science.ebird.org/en/use-ebird-data/the-ebird-taxonomy/}}
 #'       \item{comName}{Species' common name.}
 #'       \item{sciName}{Species' scientific name.}
 #'       \item{locId}{eBird identifier of the location.}
