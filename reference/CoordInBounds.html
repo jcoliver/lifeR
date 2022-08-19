@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">lifeR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,19 +91,6 @@ antimeridian are a nightmare, and since that is what will be done with this
 helper function, it will simply round down to 180.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="co"># Vector of decimal degrees</span></span></span>
-<span class="r-in"><span>  <span class="va">vals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">78</span>, <span class="fl">93</span>, <span class="op">-</span><span class="fl">112</span>, <span class="fl">184</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># Vector indicating latitude or longitude</span></span></span>
-<span class="r-in"><span>  <span class="va">dirs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu">lifeR</span><span class="fu">:::</span><span class="fu">CoordInBounds</span><span class="op">(</span>x <span class="op">=</span> <span class="va">vals</span>, latitude <span class="op">=</span> <span class="va">dirs</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># [1] 78   90 -112  180</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
