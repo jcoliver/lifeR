@@ -1,17 +1,13 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* Converted the DESCRIPTION title to title case.
+* Updated reference to eBird API in DESCRIPTION to be in single quotes, 'eBird'
 
-* Revised DESCRIPTION description to not start with package name
+* Added return value to print.recent_obs and summary.recent_obs functions
 
-* Included only CRAN BSD 2-clause LICENSE template
+* Replaced `:::` with `::` in MapSites function example
 
-* Updated URLs that were redirects
-
-* Consistently use https instead of http
-
-* Consistently use trailing slashes in URLs
+* Removed example from unexported function CoordInBounds
 
 # R CMD check results
 

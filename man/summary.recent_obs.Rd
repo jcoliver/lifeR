@@ -9,6 +9,10 @@
 \arguments{
 \item{object}{An object of class "recent_obs".}
 }
+\value{
+No return value, called to print summary of a \code{recent_obs} 
+object
+}
 \description{
 Summary of recent_obs object
 }

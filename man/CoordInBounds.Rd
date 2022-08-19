@@ -30,15 +30,4 @@ range are updated with the antimeridian in mind. For example, a longitude of
 antimeridian are a nightmare, and since that is what will be done with this 
 helper function, it will simply round down to 180.
 }
-\examples{
-\dontrun{
-  # Vector of decimal degrees
-  vals <- c(78, 93, -112, 184)
-  # Vector indicating latitude or longitude
-  dirs <- c(TRUE, TRUE, FALSE, FALSE)
-  lifeR:::CoordInBounds(x = vals, latitude = dirs)
-  # [1] 78   90 -112  180
-}
-
-}
 \keyword{internal}

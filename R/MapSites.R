@@ -23,7 +23,7 @@
 #'   localities <- data.frame(locName = c("Sweetwater Wetlands", "Reid Park"),
 #'   locID = c("L208918", "L227274"), num_new = c(3, 5),
 #'   lat = c(32.279, 32.210), lng = c(-111.022, -110.924))
-#'   lifeR:::MapSites(sites = localities)
+#'   lifeR::MapSites(sites = localities)
 #' }
 #' 
 #' @import ggplot2
@@ -169,18 +169,16 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
 #' with any invalid values (i.e. a latitude > 90) corrected to their closest 
 #' valid value
 #' 
-#' @examples 
-#' \dontrun{
-#'   # Vector of decimal degrees
-#'   vals <- c(78, 93, -112, 184)
-#'   # Vector indicating latitude or longitude
-#'   dirs <- c(TRUE, TRUE, FALSE, FALSE)
-#'   lifeR:::CoordInBounds(x = vals, latitude = dirs)
-#'   # [1] 78   90 -112  180
-#' }
-#' 
 #' @keywords internal
 CoordInBounds <- function(x, latitude) {
+  # Example usage
+  # # Vector of decimal degrees
+  # vals <- c(78, 93, -112, 184)
+  # # Vector indicating latitude or longitude
+  # dirs <- c(TRUE, TRUE, FALSE, FALSE)
+  # CoordInBounds(x = vals, latitude = dirs)
+  # # [1] 78   90 -112  180
+
   # Start by fixing any outside of -180 to 180 (which takes care of longitudes)
   x[x < -180] <- -180
   x[x > 180] <- 180

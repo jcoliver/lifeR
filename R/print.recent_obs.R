@@ -5,6 +5,9 @@
 #' @export
 #' 
 #' @keywords internal
+#' 
+#' @return No return value, called to print summary of a \code{recent_obs} 
+#' object
 print.recent_obs <- function(x, ...) {
   cat("Results of eBird query:\n", sep = "")
   for (i in 1:length(x$query_params)) {

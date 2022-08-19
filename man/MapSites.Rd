@@ -36,7 +36,7 @@ standalone use.
   localities <- data.frame(locName = c("Sweetwater Wetlands", "Reid Park"),
   locID = c("L208918", "L227274"), num_new = c(3, 5),
   lat = c(32.279, 32.210), lng = c(-111.022, -110.924))
-  lifeR:::MapSites(sites = localities)
+  lifeR::MapSites(sites = localities)
 }
 
 }
