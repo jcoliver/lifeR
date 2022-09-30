@@ -1,4 +1,16 @@
 url: https://jcoliver.github.io/lifeR/
+
+home:
+  title: lifeR
+  description: Identify sites for your bird list
+
 template:
   bootstrap: 5
+  opengraph:
+    image:
+      src: man/figures/logo.png
+      alt: "Montezuma quail head and word lifeR"
+    twitter:
+      creator: "@jcoliverAZ"
+      card: summary_large_image
 
