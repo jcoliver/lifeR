@@ -1,13 +1,8 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* Updated reference to eBird API in DESCRIPTION to be in single quotes, 'eBird'
-
-* Added return value to print.recent_obs and summary.recent_obs functions
-
-* Replaced `:::` with `::` in MapSites function example
-
-* Removed example from unexported function CoordInBounds
+* Updated the DESCRIPTION to use the Authors@R field to declare Maintainer and 
+Author roles.
 
 # R CMD check results
 

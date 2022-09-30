@@ -2,8 +2,12 @@ Package: lifeR
 Type: Package
 Title: Identify Sites for Your Bird List
 Version: 0.9.6
-Author: Jeffrey C. Oliver
-Maintainer: Jeffrey C. Oliver <jcoliver@arizona.edu>
+Authors@R: 
+  c(person(given = "Jeffrey",
+           family = "Oliver",
+           role = c("aut", "cre"),
+           email = "jcoliver@arizona.edu",
+           comment = c(ORCID = "0000-0003-2160-1086")))
 Description: A suite of tools to use the 'eBird' database 
     (<https://ebird.org/home/>) and APIs to compare users' species lists to 
     recent observations and create a report of the top sites to visit to see 
