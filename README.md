@@ -1,5 +1,7 @@
 # lifeR <img src="man/figures/logo.png" align="right" alt="lifeR logo" width="120">
 
+[![cran version](https://www.r-pkg.org/badges/version/lifeR)](https://cran.r-project.org/package=lifeR)
+
 An R package for identifying locations to visit in order to increase your 
 species list count. The package relies on the 
 [eBird API](https://documenter.getpostman.com/view/664302/S1ENwy59) to query 
@@ -8,17 +10,23 @@ can be life lists, year lists, county lists, etc.
 
 # Installation
 
-Currently, only a development version is available (it should be available on 
-CRAN soon). You can install this version from GitHub with the help of the 
-remotes package
+You can install lifeR from CRAN via:
+
+```r
+install.packages("lifeR")
+```
+
+Alternatively, you can download the development version from GitHub with the 
+help of the remotes package:
 
 ```r
 install.packages("remotes")
 remotes::install_github(repo = "jcoliver/lifeR")
 ```
 
-If you want to have the introductory vignette included in the installation, 
-then pass `build_vignettes = TRUE` in the call to `install_github()`:
+If you install from GitHub and want to have the introductory vignette included 
+in the installation, then pass `build_vignettes = TRUE` in the call to 
+`install_github()`:
 
 ```r
 install.packages("remotes")

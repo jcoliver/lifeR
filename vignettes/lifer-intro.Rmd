@@ -32,16 +32,23 @@ recently.
 
 # Installation
 
-Currently, you will need to install the package from GitHub; you can do this 
-with help from the remotes package:
+You can install lifeR from CRAN via:
 
-```{r install, eval = FALSE}
+```{r install-cran, eval = FALSE}
+install.packages("lifeR")
+```
+
+Alternatively, you can download the development version from GitHub with the 
+help of the remotes package:
+
+```{r install-github, eval = FALSE}
 install.packages("remotes")
 remotes::install_github(repo = "jcoliver/lifeR")
 ```
 
-If you want to have the introductory vignette included in the installation, 
-then pass `build_vignettes = TRUE` in the call to `install_github()`:
+If you install from GitHub and want to have the introductory vignette included 
+in the installation, then pass `build_vignettes = TRUE` in the call to 
+`install_github()`:
 
 ```{r install-vignette, eval = FALSE}
 remotes::install_github(repo = "jcoliver/lifeR", build_vignettes = TRUE)
