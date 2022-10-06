@@ -82,21 +82,25 @@
 <img src="logo.png" class="logo" alt=""><h1 id="lifer-">lifeR <a class="anchor" aria-label="anchor" href="#lifer-"></a>
 </h1>
 </div>
+
 <p>An R package for identifying locations to visit in order to increase your species list count. The package relies on the <a href="https://documenter.getpostman.com/view/664302/S1ENwy59" class="external-link">eBird API</a> to query for recent observations and compare them to a user’s species list. The lists can be life lists, year lists, county lists, etc.</p>
 </div>
 <div class="section level1">
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h1>
-<p>Currently, only a development version is available (it should be available on CRAN soon). You can install this version from GitHub with the help of the remotes package</p>
+<p>You can install lifeR from CRAN via:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"lifeR"</span><span class="op">)</span></span></code></pre></div>
+<p>Alternatively, you can download the development version from GitHub with the help of the remotes package:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"jcoliver/lifeR"</span><span class="op">)</span></span></code></pre></div>
-<p>If you want to have the introductory vignette included in the installation, then pass <code>build_vignettes = TRUE</code> in the call to <code>install_github()</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>If you install from GitHub and want to have the introductory vignette included in the installation, then pass <code>build_vignettes = TRUE</code> in the call to <code>install_github()</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"jcoliver/lifeR"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>And load the package with <code>library</code></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://jcoliver.github.io/lifeR/">"lifeR"</a></span><span class="op">)</span></span></code></pre></div>
 <!--
 To open the vignette, run
@@ -109,7 +113,7 @@ browseVignettes(package = "lifeR")
 <div class="section level1">
 <h1 id="a-minimalist-example">A minimalist example<a class="anchor" aria-label="anchor" href="#a-minimalist-example"></a>
 </h1>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Location of the file with your year list</span></span>
 <span><span class="va">list_file</span> <span class="op">&lt;-</span> <span class="st">"~/Desktop/ebird_world_year_2021_list.csv"</span></span>
 <span></span>
@@ -142,6 +146,7 @@ browseVignettes(package = "lifeR")
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=lifeR" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/jcoliver/lifeR/" class="external-link">Browse source code</a></li>
 </ul>
 </div>
@@ -169,7 +174,12 @@ browseVignettes(package = "lifeR")
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=lifeR" class="external-link"><img src="https://www.r-pkg.org/badges/version/lifeR" alt="cran version"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>

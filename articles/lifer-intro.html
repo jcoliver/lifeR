@@ -101,12 +101,15 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Currently, you will need to install the package from GitHub; you can do this with help from the remotes package:</p>
+<p>You can install lifeR from CRAN via:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"lifeR"</span><span class="op">)</span></span></code></pre></div>
+<p>Alternatively, you can download the development version from GitHub with the help of the remotes package:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"jcoliver/lifeR"</span><span class="op">)</span></span></code></pre></div>
-<p>If you want to have the introductory vignette included in the installation, then pass <code>build_vignettes = TRUE</code> in the call to <code>install_github()</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>If you install from GitHub and want to have the introductory vignette included in the installation, then pass <code>build_vignettes = TRUE</code> in the call to <code>install_github()</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"jcoliver/lifeR"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -151,7 +154,7 @@
 <li>
 <code>SitesReport</code> a function that handles all the querying of eBird, comparing lists, and building the report</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jcoliver.github.io/lifeR/">lifeR</a></span><span class="op">)</span></span>
 <span><span class="co"># To use the sample list included in this package</span></span>
 <span><span class="va">list_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example-list.csv"</span>, package <span class="op">=</span> <span class="st">"lifeR"</span><span class="op">)</span></span>
@@ -182,7 +185,7 @@
 <h4 id="multiple-sites-with-names">Multiple sites, with names<a class="anchor" aria-label="anchor" href="#multiple-sites-with-names"></a>
 </h4>
 <p>The example above only uses one center on which to base searches and does not provide a name for that center (it will be given the default name of “Center 1” in the report). In the example below, we provide two starting points. Note that a list of nearby sites <em>for each starting point</em> will be included in the results. That is, the report will include the top five sites near the first set of latitude and longitude coordinates and the top five sites near the second set of latitude and longitude coordinates. The example assumes you have loaded in your species list and the location of your eBird API key file as in the first example, above.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For more than one location, centers can be a matrix or a data frame, here </span></span>
 <span><span class="co"># we use a matrix of two sites</span></span>
 <span><span class="va">loc_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">39.5</span>, <span class="op">-</span><span class="fl">118.8</span>, <span class="fl">39</span>, <span class="op">-</span><span class="fl">119.1</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -200,7 +203,7 @@
 <h4 id="multiple-sites-from-a-data-frame-narrower-range-and-informative-report-file-name">Multiple sites from a data frame, narrower range, and informative report file name<a class="anchor" aria-label="anchor" href="#multiple-sites-from-a-data-frame-narrower-range-and-informative-report-file-name"></a>
 </h4>
 <p>The <code>SitesReport</code> can also accommodate a data frame of latitude and longitude coordinates. You can also give your report a different name (with <code>report_filename</code>) and specify where it is saved (with <code>report_dir</code>).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">loc_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>latitude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">39.5</span>, <span class="fl">39</span>, <span class="fl">40</span><span class="op">)</span>,</span>
 <span>                     longitude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">118.8</span>, <span class="op">-</span><span class="fl">119.1</span>, <span class="op">-</span><span class="fl">118.6</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">loc_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Fallon"</span>, <span class="st">"Yerington"</span>, <span class="st">"Humbolt Wildlife"</span><span class="op">)</span></span>
