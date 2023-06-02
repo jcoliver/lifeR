@@ -114,10 +114,8 @@ sites to visit.
 ### A minimalist example
 
 This example creates a report from a single center, near McCall, Idaho, USA. It 
-uses two functions from lifeR:
+uses one function from lifeR:
 
-+ `SplitNames` a helper function to deal with the format of species names 
-returned from eBird, and 
 + `SitesReport` a function that handles all the querying of eBird, comparing 
 lists, and building the report
 
@@ -134,7 +132,7 @@ list_file <- system.file("extdata", "example-list.csv", package = "lifeR")
 user_list <- read.csv(file = list_file)
 
 # Extract the common names of species from your list
-my_species <- SplitNames(x = user_list$Species)$Common
+my_species <- user_list$Common
 
 # Read in eBird API key from a text file; replace the argument to file with 
 # the actual location of your eBird key file
@@ -150,6 +148,27 @@ SitesReport(centers = locs,
 
 The resulting report will be called Goals-Report.html and you can open it in 
 your favorite web browser.
+
+NB: If the list file you are using was downloaded prior to 2023, the format was 
+different - the common and scientific names were combined in a single column 
+(called `Species`) that needed to be split. If your list is one of these older 
+downloads, you will need to replace this line:
+
+```{r, current-species, eval = FALSE}
+my_species <- user_list$Common
+```
+
+with this:
+
+```{r, older-species, eval = FALSE}
+my_species <- SplitNames(x = user_list$Species)$Common
+```
+
+The line above will use `SplitNames()`, a helper function to deal with the 
+format of species names returned from eBird for older downloads. Note this is 
+only necessary if the _download_ was prior to 2023. If you are using your list 
+from 2015 that you downloaded yesterday, you do not need to use the 
+`SplitNames()` function (i.e. just use `my_species <- user_list$Common`).
 
 ### Multiple sites, with names
 

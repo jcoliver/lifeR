@@ -1,8 +1,7 @@
 ## Resubmission
-This is a resubmission. In this version I have:
+This is an update. In this version I have:
 
-* Updated the DESCRIPTION to use the Authors@R field to declare Maintainer and 
-Author roles.
+* Updated documentation to reflect changes to eBird data
 
 # R CMD check results
 

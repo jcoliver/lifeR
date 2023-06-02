@@ -1,7 +1,7 @@
 Package: lifeR
 Type: Package
 Title: Identify Sites for Your Bird List
-Version: 0.9.6
+Version: 0.9.7
 Authors@R: 
   c(person(given = "Jeffrey",
            family = "Oliver",

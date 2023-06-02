@@ -57,7 +57,7 @@ list_file <- "~/Desktop/ebird_world_year_2021_list.csv"
 user_list <- read.csv(file = list_file)
 
 # Extract the common names of species from your list
-my_species <- SplitNames(x = user_list$Species)$Common
+my_species <- user_list$Common
 
 # Read in eBird API key from a text file; replace the argument to file with 
 # the actual location of your eBird key file
