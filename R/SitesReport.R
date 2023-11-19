@@ -36,6 +36,10 @@
 #' exclude certain species from consideration, such as domesticated species,
 #' hybrids, and observations not identified to species level (e.g.
 #' "Toxostoma sp.").
+#' @param include_maps Logical vector indicating whether or not to draw maps 
+#' of identified sites; should be length 1 or the number of centers (i.e. same
+#' length as \code{centers} if \code{centers} is a vector, same number of rows
+#' as \code{centers} if \code{centers} is a matrix). 
 #'
 #' @details The function uses the eBird API (see \url{https://documenter.getpostman.com/view/664302/S1ENwy59/})
 #' to build the report. Queries to the eBird API require a user key; you can 
@@ -97,7 +101,8 @@ SitesReport <- function(centers,
                         max_tries = 5,
                         timeout_sec = 30,
                         messages = c("minimal", "none", "verbose"), 
-                        drop_patterns = c("sp.", "/", "Domestic type", "hybrid")) {
+                        drop_patterns = c("sp.", "/", "Domestic type", "hybrid"),
+                        include_maps = TRUE) {
 
   # Grab report format; doing this early to ensure proper format is indicated
   report_format <- match.arg(report_format)
@@ -166,6 +171,13 @@ SitesReport <- function(centers,
     species_user <- species_seen
   }
   
+  # If user passed single value to include_maps, create vector same length as 
+  # centers_list
+  if (length(include_maps) == 1 && length(centers_list) != 1) {
+    include_maps <- rep(x = include_maps, 
+                        times = length(centers_list))
+  }
+
   # list to store results of various queries; each element will be a list with 
   # two child elements:
   #    center_info: the original centers_list data.frame
@@ -306,7 +318,8 @@ SitesReport <- function(centers,
                          back = back,
                          hotspot = hotspot,
                          include_provisional = include_provisional,
-                         drop_patterns = drop_patterns)
+                         drop_patterns = drop_patterns,
+                         include_maps = include_maps)
   
   # Locate the template RMarkdown file
   report_template <- system.file("rmd", "Report-Template.Rmd", 
