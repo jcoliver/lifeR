@@ -15,7 +15,7 @@
 #' template RMarkdown file used to build reports. It is not intended for 
 #' standalone use.
 #' 
-#' @return A ggmap object.
+#' @return A leaflet object; if map server is unavailable, returns \code{NULL}.
 #' 
 #' @examples
 #' \dontrun{
@@ -26,8 +26,7 @@
 #'   lifeR::MapSites(sites = localities)
 #' }
 #' 
-#' @import ggplot2
-#' @importFrom ggmap get_map ggmap
+#' @import leaflet
 #' @export
 #' 
 #' @keywords internal
@@ -92,62 +91,66 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
   # Ensure lat/lng are in bounds
   map_bounds <- CoordInBounds(x = map_bounds,
                               latitude = c(FALSE, TRUE, FALSE, TRUE))
-  
-  # Want to be sure stamen maps is responsive
-  # First use ggmap::get_map to get URLs of all map tiles, check each of them 
-  # for 200 status, then do query again as long as all the tiles are returning 
-  # status 200
-  map_urls <- ggmap::get_map(location = map_bounds,
-                             source = "stamen",
-                             maptype = "terrain",
-                             urlonly = TRUE)
-  # Run curl_fetch_memory on each tile URL
-  test_tiles <- lapply(X = map_urls, FUN = curl::curl_fetch_memory)
-  # Pull out status_code element from each of the test_tiles sub-lists
-  statuses <- unlist(lapply(test_tiles, "[[", "status_code"))
-  if (all(statuses == 200)) {
-    # All tiles look good, proceed with mapping
-    center_map <- ggmap::get_map(location = map_bounds, 
-                                 source = "stamen", 
-                                 maptype = "terrain")
-    
-    # Need to color by site name, using print_name for legend
-    sites_map <- ggmap::ggmap(ggmap = center_map) +
-      ggplot2::geom_point(data = sites,
-                          mapping = ggplot2::aes(x = .data$lng, 
-                                                 y = .data$lat, 
-                                                 fill = .data$print_name),
-                          size = 3,
-                          color = "black",
-                          shape = 21) +
-      ggplot2::scale_fill_brewer(name = "Site", palette = "Paired") +
-      ggplot2::theme_minimal() +
-      ggplot2::xlab(label = "Longitude") +
-      ggplot2::ylab(label = "Latitude")
+
+  # Now we are ready to actually build the map
+  sites_map <- NULL
+  tryCatch(expr = {
+    # Note: fitBounds complains a bit with a named vector (like map_bounds), 
+    # drop the names (left, bottom, right top)
+    names(map_bounds) <- NULL
+    # Create base map
+    sites_map <- leaflet::leaflet(sites) %>%
+      leaflet::fitBounds(map_bounds[1], map_bounds[2], # xmin, ymin
+                         map_bounds[3], map_bounds[4]) %>% # xmax, ymax
+      leaflet::addTiles()
     
     # If the coordinates for the center are not NULL, add them as a point
     if (!is.null(center_lat) & !is.null(center_lng)) {
-      center_df <- data.frame(lng = center_lng, lat = center_lat)
-      sites_map <- sites_map +
-        ggplot2::geom_point(data = center_df,
-                            mapping = ggplot2::aes(x = .data$lng, 
-                                                   y = .data$lat),
-                            size = 4,
-                            shape = 16, # circled colored white
-                            color = "white") +
-        ggplot2::geom_point(data = center_df,
-                            mapping = ggplot2::aes(x = .data$lng, 
-                                                   y = .data$lat),
-                            size = 4,
-                            shape = 10, # black circle outline with center plus
-                            color = "black")
+      # Start by creating the icon
+      center_icon <- leaflet::makeAwesomeIcon(icon = "home",
+                                              library = "glyphicon",
+                                              markerColor = "white",
+                                              iconColor = "black",
+                                              squareMarker = TRUE)
+      # Add the icon to the map
+      sites_map <- sites_map %>%
+        leaflet::addAwesomeMarkers(lng = center_lng,
+                                   lat = center_lat,
+                                   icon = center_icon)
+    } else {
+      message("NO CENTER COORDS")
     }
-    return(sites_map)
-  } else { # One or more tiles wasn't returned
-    # Warn user about problems with map and return NULL
-    warning("The map server did not respond to request, maps may not be drawn.")
-    return(NULL)
-  }
+    
+    # Create color palette for sites
+    site_palette <- leaflet::colorFactor(palette = "Paired",
+                                         domain = sites$print_name)
+    
+    # Add points for sites
+    sites_map <- sites_map %>%
+      leaflet::addCircleMarkers(radius = 8,
+                                fillColor = ~site_palette(print_name),
+                                fillOpacity = 1.0,
+                                stroke = TRUE,
+                                color = "#000000", # stroke
+                                weight = 2.0,
+                                opacity = 1.0)
+    
+    # Add legend
+    sites_map <- sites_map %>%
+      leaflet::addLegend(position = "bottomright", 
+                         pal = site_palette, 
+                         values = ~print_name,
+                         title = "Top Sites",
+                         opacity = 1)
+  }, # End of expression to try
+  error = function(e) {
+    message("Map creation unsuccessful; likely map server is down.")
+    e
+  }, # End of error catch
+  finally = NULL) # end of tryCatch
+  
+  # Return either leaflet map object (if successful) or NULL (unsuccessful)
+  return(sites_map)
 }
 
 #' Determine if coordinate is in bounds, and if not, return closed valid value
