@@ -1,7 +1,7 @@
 ## Resubmission
 This is an update. In this version I have:
 
-* Updated documentation to reflect changes to eBird data
+* Replaced ggmap with leaflet for creating maps
 
 # R CMD check results
 

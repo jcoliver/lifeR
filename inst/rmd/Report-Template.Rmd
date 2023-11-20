@@ -36,18 +36,23 @@ for (i in 1:length(params$results_list)) {
       distinct(locName, .keep_all = TRUE) %>%
       arrange(desc(num_new))
     
-    suppressMessages(
-      sites_map <- lifeR:::MapSites(sites = sites, 
-                                    center_lng = center_info$lng, 
-                                    center_lat = center_info$lat)
-    )
-    
-    if (!is.null(sites_map)) {
-      print(sites_map)
-    } else {
-      cat("\n_Map is unavailable, likely due to unresponsive map server._")
+    # Only print out maps if we are supposed to
+    if (report_details[["include_maps"]][i]) {
+      suppressMessages(
+        sites_map <- lifeR:::MapSites(sites = sites, 
+                                      center_lng = center_info$lng, 
+                                      center_lat = center_info$lat)
+      )
+      
+      if (!is.null(sites_map)) {
+        print(sites_map)
+      } else {
+        cat("\n_Map is unavailable, likely due to unresponsive map server._")
+      }
+      
     }
-
+    # End of maps
+    
     # Make new line after map is printed
     cat("\n\n")
 
@@ -120,9 +125,9 @@ Settings for this report:
   drop_patterns <- report_details[["drop_patterns"]]
 ```
 
-+ Maximum number of sites to report: `r report_details[["max_sites"]]`
-+ Distance from each center point: `r report_details[["dist"]]` km
-+ Days covered: `r Sys.Date() - report_details[["back"]]` through `r Sys.Date()`
-+ Results `r hotspot_restrict`restricted to hotspots
-+ Results `r provisional`include provisional observations
++ Maximum number of sites to report: `r max_sites`
++ Distance from each center point: `r dist` km
++ Days covered: `r Sys.Date() - back` through `r Sys.Date()`
++ Results `r hotspot_restrict` restricted to hotspots
++ Results `r provisional` include provisional observations
 + Species with the following patterns in their names were excluded: `r paste0(drop_patterns, collapse = ", ")`
