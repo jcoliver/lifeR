@@ -27,6 +27,7 @@
 #' }
 #' 
 #' @import leaflet
+#' @import dplyr
 #' @export
 #' 
 #' @keywords internal
