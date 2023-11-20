@@ -20,7 +20,7 @@ MapSites(sites, center_lng = NULL, center_lat = NULL)
 of the geographic center used for searching sites.}
 }
 \value{
-A ggmap object.
+A leaflet object; if map server is unavailable, returns \code{NULL}.
 }
 \description{
 Map of sites with highest number of missing species

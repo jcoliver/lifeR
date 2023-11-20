@@ -25,7 +25,7 @@ Imports:
     rmarkdown (>= 2.7),
     stringr (>= 1.4.0),
     leaflet (>= 2.2.1)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 Suggests: 
     testthat
 VignetteBuilder: knitr
