@@ -1,7 +1,7 @@
 # Resubmission
 This is an update. In this version I have:
 
-* Replaced ggmap with leaflet for creating maps
+* Replaced ggmap with tidyterra for creating maps
 
 # R CMD check results
 
