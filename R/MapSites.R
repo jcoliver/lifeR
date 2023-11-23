@@ -8,14 +8,14 @@
 #'   \item{lat}{Numeric latitude in decimal degrees}
 #'   \item{lng}{Numeric longitude in decimal degrees}
 #' }
-#' @param center_lng, center_lat Numeric decimal degrees longitude and latitude 
+#' @param center_lng, center_lat numeric decimal degrees longitude and latitude 
 #' of the geographic center used for searching sites.
 #' 
 #' @details The function is primarily used by \code{SitesReport} via the 
 #' template RMarkdown file used to build reports. It is not intended for 
 #' standalone use.
 #' 
-#' @return A leaflet object; if map server is unavailable, returns \code{NULL}.
+#' @return A ggplot object; if map server is unavailable, returns \code{NULL}.
 #' 
 #' @examples
 #' \dontrun{
@@ -26,8 +26,11 @@
 #'   lifeR::MapSites(sites = localities)
 #' }
 #' 
-#' @import leaflet
 #' @import dplyr
+#' @import ggplot2
+#' @importFrom terra ext
+#' @importFrom tidyterra geom_spatraster_rgb
+#' @importFrom maptiles get_tiles
 #' @export
 #' 
 #' @keywords internal
@@ -38,7 +41,7 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
   # Make a shorter version of the location name for map
   sites$print_name <- substr(x = sites$locName,
                              start = 1, 
-                             stop = 16)
+                             stop = 24)
   # Add in the number of new species
   sites$print_name <- paste0(sites$print_name, " (", sites$num_new, ")")
   
@@ -96,53 +99,51 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
   # Now we are ready to actually build the map
   sites_map <- NULL
   tryCatch(expr = {
-    # Note: fitBounds complains a bit with a named vector (like map_bounds), 
-    # drop the names (left, bottom, right top)
-    names(map_bounds) <- NULL
-    # Create base map
-    sites_map <- leaflet::leaflet(sites) %>%
-      leaflet::fitBounds(map_bounds[1], map_bounds[2], # xmin, ymin
-                         map_bounds[3], map_bounds[4]) %>% # xmax, ymax
-      leaflet::addTiles()
+    map_ext <- terra::ext(c(map_bounds["left"], # xmin, xmax, ymin, ymax
+                            map_bounds["right"],
+                            map_bounds["bottom"],
+                            map_bounds["top"]))
+    
+    # Get the map tiles for this extent
+    # TODO: Would be nice to make the zoom value dynamic, based on lat/lng span
+    map_tiles <- maptiles::get_tiles(x = map_ext, 
+                                     zoom = 13,
+                                     crop = TRUE)
+    # Base map, making it slightly transparent makes it easier to see points
+    sites_map <- ggplot2::ggplot() +
+      tidyterra::geom_spatraster_rgb(data = map_tiles, alpha = 0.7)
     
     # If the coordinates for the center are not NULL, add them as a point
     if (!is.null(center_lat) & !is.null(center_lng)) {
-      # Start by creating the icon
-      center_icon <- leaflet::makeAwesomeIcon(icon = "home",
-                                              library = "glyphicon",
-                                              markerColor = "white",
-                                              iconColor = "black",
-                                              squareMarker = TRUE)
-      # Add the icon to the map
-      sites_map <- sites_map %>%
-        leaflet::addAwesomeMarkers(lng = center_lng,
-                                   lat = center_lat,
-                                   icon = center_icon)
-    } else {
-      message("NO CENTER COORDS")
+      center_df <- data.frame(lng = center_lng, lat = center_lat)
+      sites_map <- sites_map +
+        ggplot2::geom_point(data = center_df,
+                            mapping = ggplot2::aes(x = .data$lng, 
+                                                   y = .data$lat),
+                            size = 4,
+                            shape = 16, # circled colored white
+                            color = "white") +
+        ggplot2::geom_point(data = center_df,
+                            mapping = ggplot2::aes(x = .data$lng, 
+                                                   y = .data$lat),
+                            size = 4,
+                            shape = 10, # black circle outline with center plus
+                            color = "black")
     }
     
-    # Create color palette for sites
-    site_palette <- leaflet::colorFactor(palette = "Paired",
-                                         domain = sites$print_name)
-    
-    # Add points for sites
-    sites_map <- sites_map %>%
-      leaflet::addCircleMarkers(radius = 8,
-                                fillColor = ~site_palette(print_name),
-                                fillOpacity = 1.0,
-                                stroke = TRUE,
-                                color = "#000000", # stroke
-                                weight = 2.0,
-                                opacity = 1.0)
-    
-    # Add legend
-    sites_map <- sites_map %>%
-      leaflet::addLegend(position = "bottomright", 
-                         pal = site_palette, 
-                         values = ~print_name,
-                         title = "Top Sites",
-                         opacity = 1)
+    # Add the points and a legend  
+    sites_map <- sites_map + 
+      ggplot2::geom_point(data = sites,
+                          mapping = ggplot2::aes(x = .data$lng, 
+                                                 y = .data$lat, 
+                                                 fill = .data$print_name),
+                          size = 3,
+                          color = "black",
+                          shape = 21) +
+      ggplot2::scale_fill_brewer(name = "Site", palette = "Paired") +
+      ggplot2::theme_minimal() +
+      ggplot2::xlab(label = "Longitude") +
+      ggplot2::ylab(label = "Latitude")
   }, # End of expression to try
   error = function(e) {
     message("Map creation unsuccessful; likely map server is down.")
@@ -150,7 +151,7 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
   }, # End of error catch
   finally = NULL) # end of tryCatch
   
-  # Return either leaflet map object (if successful) or NULL (unsuccessful)
+  # Return either ggplot object (if successful) or NULL (unsuccessful)
   return(sites_map)
 }
 
