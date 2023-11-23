@@ -25,7 +25,8 @@ for (i in 1:length(params$results_list)) {
     # recent nearby sightings returned zero results
     cat("# _No sites returned for ", center_info$name[1], "_\n\n")
   } else {
-    cat("#", center_info$name[1], "Top Sites\n\n")
+    cat("# ", center_info$name[1], "Top Sites\n")
+    cat("\n")
     
     # See how many new species at each site, retaining lat & lng for printing 
     # map had to get creative to get lat & long through (hence no summarize)
@@ -49,7 +50,6 @@ for (i in 1:length(params$results_list)) {
       } else {
         cat("\n_Map is unavailable, likely due to unresponsive map server._")
       }
-      
     }
     # End of maps
     

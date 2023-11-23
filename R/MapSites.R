@@ -107,7 +107,7 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
     # Get the map tiles for this extent
     # TODO: Would be nice to make the zoom value dynamic, based on lat/lng span
     map_tiles <- maptiles::get_tiles(x = map_ext, 
-                                     zoom = 13,
+                                     zoom = 10,
                                      crop = TRUE)
     # Base map, making it slightly transparent makes it easier to see points
     sites_map <- ggplot2::ggplot() +

@@ -113,7 +113,7 @@ your eBird API key.
   list_file <- system.file("extdata", "example-list.csv", package = "lifeR")
   user_list <- read.csv(file = list_file)
   # Only common names are required
-  my_species <- user_list$Common
+  my_species <- user_list$Common.Name
   # Read in eBird API key from a text file
   key <- scan(file = "ebird-key.txt", what = "character")
 

@@ -1,7 +1,7 @@
 Package: lifeR
 Type: Package
 Title: Identify Sites for Your Bird List
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
   c(person(given = "Jeffrey",
            family = "Oliver",
@@ -24,9 +24,10 @@ Imports:
     readr (>= 1.4.0),
     rmarkdown (>= 2.7),
     stringr (>= 1.4.0),
+    ggplot2 (>= 3.4.4),
     maptiles (>= 0.6.1),
-    terra (1.7-55),
-    tidyterra (0.5.0)
+    terra (>= 1.7-55),
+    tidyterra (>= 0.5.0)
 RoxygenNote: 7.2.3
 Suggests: 
     testthat

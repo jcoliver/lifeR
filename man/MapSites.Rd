@@ -16,11 +16,11 @@ MapSites(sites, center_lng = NULL, center_lat = NULL)
   \item{lng}{Numeric longitude in decimal degrees}
 }}
 
-\item{center_lng, }{center_lat Numeric decimal degrees longitude and latitude 
+\item{center_lng, }{center_lat numeric decimal degrees longitude and latitude 
 of the geographic center used for searching sites.}
 }
 \value{
-A leaflet object; if map server is unavailable, returns \code{NULL}.
+A ggplot object; if map server is unavailable, returns \code{NULL}.
 }
 \description{
 Map of sites with highest number of missing species
