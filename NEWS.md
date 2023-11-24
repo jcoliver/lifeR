@@ -1,6 +1,9 @@
-# lifeR 1.0.0
+# lifeR 1.0.1
 
-+ Maps created with leaflet package
++ Map tiles provided by OpenStreetMaps, replacing Stadia (formerly Stamen) maps
+
++ `SitesReport()` includes parameter `include_maps` to toggle whether or not
+  maps are created and shown
 
 # lifeR 0.9.7
 
