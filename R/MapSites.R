@@ -155,11 +155,11 @@ MapSites <- function(sites, center_lng = NULL, center_lat = NULL) {
   return(sites_map)
 }
 
-#' Determine if coordinate is in bounds, and if not, return closed valid value
+#' Determine if coordinate is in bounds, and if not, return valid value
 #' 
-#' @param x numeric decimal degree, longitude or latitude
-#' @param direction logical indicating whether \code{x} is latitude or not 
-#' (i.e. is longitude)
+#' @param x numeric four coordinates of bounding box in decimal degrees 
+#' @param latitude logical vector of length four indicating whether each 
+#' element in \code{x} is latitude or not (i.e. is longitude)
 #' 
 #' @details A helper function designed to keep map bounds from using invalid 
 #' coordinates (latitudes outside of -90 and 90; longitudes outside of -180 and 

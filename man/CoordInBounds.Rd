@@ -2,15 +2,15 @@
 % Please edit documentation in R/MapSites.R
 \name{CoordInBounds}
 \alias{CoordInBounds}
-\title{Determine if coordinate is in bounds, and if not, return closed valid value}
+\title{Determine if coordinate is in bounds, and if not, return valid value}
 \usage{
 CoordInBounds(x, latitude)
 }
 \arguments{
-\item{x}{numeric decimal degree, longitude or latitude}
+\item{x}{numeric four coordinates of bounding box in decimal degrees}
 
-\item{direction}{logical indicating whether \code{x} is latitude or not 
-(i.e. is longitude)}
+\item{latitude}{logical vector of length four indicating whether each 
+element in \code{x} is latitude or not (i.e. is longitude)}
 }
 \value{
 a copy of the original numeric vector of decimal degrees, \code{x}, 
@@ -18,7 +18,7 @@ with any invalid values (i.e. a latitude > 90) corrected to their closest
 valid value
 }
 \description{
-Determine if coordinate is in bounds, and if not, return closed valid value
+Determine if coordinate is in bounds, and if not, return valid value
 }
 \details{
 A helper function designed to keep map bounds from using invalid 
