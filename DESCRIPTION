@@ -19,13 +19,13 @@ Depends: R (>= 4.2.0)
 Imports:
     curl (>= 4.3),
     dplyr (>= 1.0.2),
+    ggplot2 (>= 3.4.4),
     jsonlite (>= 1.7.0),
     knitr (>= 1.31),
+    maptiles (>= 0.6.1),
     readr (>= 1.4.0),
     rmarkdown (>= 2.7),
     stringr (>= 1.4.0),
-    ggplot2 (>= 3.4.4),
-    maptiles (>= 0.6.1),
     terra (>= 1.7-55),
     tidyterra (>= 0.5.0)
 RoxygenNote: 7.2.3
