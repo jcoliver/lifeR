@@ -1,7 +1,7 @@
 # Resubmission
 This is an update. In this version I have:
 
-* Replaced ggmap with tidyterra for creating maps
+* Removed call to curl::curl_fetch_memory
 
 # R CMD check results
 
