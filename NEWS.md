@@ -1,3 +1,7 @@
+# lifeR 1.0.2
+
++ Patch to remove error-prone call to curl::curl_fetch_memory
+
 # lifeR 1.0.1
 
 + Map tiles provided by OpenStreetMaps, replacing Stadia (formerly Stamen) maps
