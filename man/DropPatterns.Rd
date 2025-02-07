@@ -6,7 +6,7 @@
 \usage{
 DropPatterns(
   data,
-  patterns = c("sp.", "/", "Domestic type", "hybrid"),
+  patterns = c("sp\\\\.", "\\\\/", "Domestic type", "hybrid"),
   colname = "comName"
 )
 }
@@ -15,7 +15,7 @@ DropPatterns(
 \code{RecentNearby}.}
 
 \item{patterns}{Character vector of patterns in \code{colname} column to
-omit.}
+omit; interprets regular expressions.}
 
 \item{colname}{Character vector indicating column with names to search for
 \code{patterns}.}
@@ -30,7 +30,9 @@ Drop species with given patterns in name
 \details{
 This utility function provides a means of omitting observations of
 "other taxa" such as domestics, hybrids, and "sp." observations. If
-\code{patterns = NULL}, no rows will be dropped.
+\code{patterns = NULL}, no rows will be dropped. The function uses 
+\code{grep} with \code{fixed = FALSE} to identify which rows to exclude, 
+hence the backslashes in the default values in \code{patterns}.
 }
 \examples{
 df <- data.frame(comName = c("Mallard", "Mallard x Mexican Duck hybrid", "Verdin"),

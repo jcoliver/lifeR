@@ -1,7 +1,8 @@
 # Resubmission
 This is an update. In this version I have:
 
-* Removed call to curl::curl_fetch_memory
+* Updated default values of a parameter to avoid unanticipated behavior of 
+  pattern matching
 
 # R CMD check results
 
