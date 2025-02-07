@@ -3,13 +3,15 @@
 #' @param data A data.frame with observations, likely the object from a call to
 #' \code{RecentNearby}.
 #' @param patterns Character vector of patterns in \code{colname} column to
-#' omit.
+#' omit; interprets regular expressions.
 #' @param colname Character vector indicating column with names to search for
 #' \code{patterns}.
 #'
 #' @details This utility function provides a means of omitting observations of
 #' "other taxa" such as domestics, hybrids, and "sp." observations. If
-#' \code{patterns = NULL}, no rows will be dropped.
+#' \code{patterns = NULL}, no rows will be dropped. The function uses 
+#' \code{grep} with \code{fixed = FALSE} to identify which rows to exclude, 
+#' hence the backslashes in the default values in \code{patterns}.
 #'
 #' @return Copy of \code{data} with any rows that has values in \code{colname}
 #' that match values in \code{patterns}.
@@ -23,7 +25,7 @@
 #' 
 #' @keywords internal
 DropPatterns <- function(data,
-                         patterns = c("sp.", "/", "Domestic type", "hybrid"),
+                         patterns = c("sp\\.", "\\/", "Domestic type", "hybrid"),
                          colname = "comName"){
 
   # Make sure there are patterns to match

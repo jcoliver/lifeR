@@ -1,3 +1,8 @@
+# lifeR 1.0.3
+
++ Patch to fix bug in `DropPattern()`'s matching due to regular expression 
+  interpretation
+
 # lifeR 1.0.2
 
 + Patch to remove error-prone call to curl::curl_fetch_memory

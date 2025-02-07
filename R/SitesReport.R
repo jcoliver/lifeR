@@ -101,7 +101,7 @@ SitesReport <- function(centers,
                         max_tries = 5,
                         timeout_sec = 30,
                         messages = c("minimal", "none", "verbose"), 
-                        drop_patterns = c("sp.", "/", "Domestic type", "hybrid"),
+                        drop_patterns = c("sp\\.", "\\/", "Domestic type", "hybrid"),
                         include_maps = TRUE) {
 
   # Grab report format; doing this early to ensure proper format is indicated
