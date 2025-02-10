@@ -35,7 +35,9 @@
 #' @param drop_patterns Character vector of patterns in species' names to
 #' exclude certain species from consideration, such as domesticated species,
 #' hybrids, and observations not identified to species level (e.g.
-#' "Toxostoma sp.").
+#' "Toxostoma sp."). The function uses \code{grep} with \code{fixed = FALSE} to 
+#' identify which species to exclude, hence the backslashes in the default 
+#' values in \code{drop_patterns}.
 #' @param include_maps Logical vector indicating whether or not to draw maps 
 #' of identified sites; should be length 1 or the number of centers (i.e. same
 #' length as \code{centers} if \code{centers} is a vector, same number of rows

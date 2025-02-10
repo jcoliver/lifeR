@@ -30,9 +30,7 @@ Drop species with given patterns in name
 \details{
 This utility function provides a means of omitting observations of
 "other taxa" such as domestics, hybrids, and "sp." observations. If
-\code{patterns = NULL}, no rows will be dropped. The function uses 
-\code{grep} with \code{fixed = FALSE} to identify which rows to exclude, 
-hence the backslashes in the default values in \code{patterns}.
+\code{patterns = NULL}, no rows will be dropped.
 }
 \examples{
 df <- data.frame(comName = c("Mallard", "Mallard x Mexican Duck hybrid", "Verdin"),
