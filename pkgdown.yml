@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   lifer-intro: lifer-intro.html
-last_built: 2025-02-07T00:57Z
+last_built: 2025-02-10T21:04Z
 urls:
   reference: https://jcoliver.github.io/lifeR/reference
   article: https://jcoliver.github.io/lifeR/articles

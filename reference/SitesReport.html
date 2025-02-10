@@ -148,7 +148,9 @@ or "verbose".</p></dd>
 <dd><p>Character vector of patterns in species' names to
 exclude certain species from consideration, such as domesticated species,
 hybrids, and observations not identified to species level (e.g.
-"Toxostoma sp.").</p></dd>
+"Toxostoma sp."). The function uses <code>grep</code> with <code>fixed = FALSE</code> to
+identify which species to exclude, hence the backslashes in the default
+values in <code>drop_patterns</code>.</p></dd>
 
 
 <dt id="arg-include-maps">include_maps<a class="anchor" aria-label="anchor" href="#arg-include-maps"></a></dt>
